@@ -22,13 +22,9 @@ function generateRows(
 }
 
 var dataProvider = {
-    get rows() {
-        return generateRows(50, 100);
-    },
-    get columns() {
-        return {
-            count: 100
-        }
+    rows: generateRows(1000, 100),
+    columns: {
+        count: 100
     }
 };
 

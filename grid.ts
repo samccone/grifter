@@ -103,15 +103,23 @@ class InfiniteGrid {
     };
   }
 
-  private calculateMouseOverTargets() {
-    let xWithOffset = this.previousMouseOverPosition.x + this.viewportOffset.x;
-    let yWithOffset = this.previousMouseOverPosition.y + this.viewportOffset.y;
+  private getCellFromXY(x: number = 0, y: number = 0):{row:number, col:number} {
+    let xWithOffset = x + this.viewportOffset.x;
+    let yWithOffset = y + this.viewportOffset.y;
     
-    this.mouseOverTargets = {
+    return {
       col: Math.floor(xWithOffset / this.getColumnOuterWidth()),
       row: Math.floor((
         yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight()) 
     }
+  }    
+    
+  private calculateMouseOverTargets() {
+    const position = this.getCellFromXY(
+      this.previousMouseOverPosition.x,
+      this.previousMouseOverPosition.y);
+    
+    this.mouseOverTargets = position;
   }
 
   private onMouseWheel(e:WheelEvent) {
@@ -167,13 +175,23 @@ class InfiniteGrid {
 
   render() {
     this.ctx.clearRect(0, 0, this.dimensions.width, this.dimensions.height);
-    this.debug && (this.debugInfo.drawnCells = 0; this.debugInfo.drawnColumnHeaders = 0;);
+    if (this.debug)
+      this.debugInfo.drawnCells = this.debugInfo.drawnColumnHeaders = 0;
 
-    this.dataProvider.rows.forEach((row, rowIndex) => {
-      row.columns.forEach((column, columnIndex) => {
-        this.drawColumnItem(rowIndex, row, columnIndex, column);  
-      });
-    });
+    const startingPosition = this.getCellFromXY();
+    const startRow = startingPosition.row === -1 ? 0 : startingPosition.row;
+      
+    const endingPosition = this.getCellFromXY(this.dimensions.width, this.dimensions.height)
+      
+    for (var rowIndex = startRow; rowIndex < endingPosition.row + 1; rowIndex++) {
+        const row = this.dataProvider.rows[rowIndex];
+        if (!row) break;
+        for (var columnIndex = startingPosition.col; columnIndex < endingPosition.col + 1; columnIndex++) {
+            const column = row.columns[columnIndex];
+            if (!column) break;
+            this.drawColumnItem(rowIndex, row, columnIndex, column);
+        }
+    }
 
     this.renderColumnHeaders();
 
