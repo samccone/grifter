@@ -18,7 +18,7 @@ class InfiniteGrid {
   private container: HTMLElement;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private dimensions: Dimensions; 
+  private dimensions: Dimensions;
   private dataProvider: any;
   private viewportOffset: Offset;
   private previousOffset: Offset;
@@ -34,23 +34,23 @@ class InfiniteGrid {
   debug:boolean = false;
 
   constructor(
-    container: HTMLElement, 
-    dimensions: Dimensions, 
+    container: HTMLElement,
+    dimensions: Dimensions,
     dataProvider) {
-    
+
     this.viewportOffset = {x: 0, y: 0};
     this.previousOffset = {x: 0, y: 0};
     this.mouseOverTargets = {col: -1, row: -1};
     this.mouseOverPosition = {x: -1, y: -1};
     this.previousMouseOverPosition = {x: -1, y: -1};
-    
+
     this.scalar = 1;
     this.oldScalar = 1;
 
     this.container = container;
     this.dataProvider = dataProvider;
     this.dimensions = dimensions;
-    this.setup(dimensions); 
+    this.setup(dimensions);
   }
 
   updateScalar(newScalar:number) {
@@ -59,11 +59,11 @@ class InfiniteGrid {
 
   private setDimensions(dimensions:Dimensions) {
     this.canvas.setAttribute(
-      'width', 
+      'width',
       String(dimensions.width));
-      
+
     this.canvas.setAttribute(
-      'height', 
+      'height',
       String(dimensions.height));
 
     this.canvas.style.width = `${dimensions.width / window.devicePixelRatio}px`;
@@ -71,24 +71,24 @@ class InfiniteGrid {
   }
 
   updateDimensions(dimensions:Dimensions) {
-    this.setDimensions(dimensions) 
-    this.dimensions = dimensions 
+    this.setDimensions(dimensions)
+    this.dimensions = dimensions
     this.render();
   }
 
   private setEventListeners() {
     this.canvas.addEventListener(
-      'wheel', 
+      'wheel',
       this.onMouseWheel.bind(this))
 
     this.canvas.addEventListener(
-      'mousemove', 
-      this.onMouseMove.bind(this))    
+      'mousemove',
+      this.onMouseMove.bind(this))
   }
 
   private setup(dimensions:Dimensions) {
     this.canvas = document.createElement('canvas');
-    this.setDimensions(dimensions) 
+    this.setDimensions(dimensions)
 
     this.ctx = this.canvas.getContext('2d');
     this.container.appendChild(this.canvas);
@@ -106,19 +106,19 @@ class InfiniteGrid {
   private getCellFromXY(x: number = 0, y: number = 0):{row:number, col:number} {
     let xWithOffset = x + this.viewportOffset.x;
     let yWithOffset = y + this.viewportOffset.y;
-    
+
     return {
       col: Math.floor(xWithOffset / this.getColumnOuterWidth()),
       row: Math.floor((
-        yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight()) 
+        yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight())
     }
-  }    
-    
+  }
+
   private calculateMouseOverTargets() {
     const position = this.getCellFromXY(
       this.previousMouseOverPosition.x,
       this.previousMouseOverPosition.y);
-    
+
     this.mouseOverTargets = position;
   }
 
@@ -146,7 +146,7 @@ class InfiniteGrid {
     }
 
     window.requestAnimationFrame(
-      this.renderLoop.bind(this));  
+      this.renderLoop.bind(this));
   }
 
   private invalidated():boolean {
@@ -163,13 +163,13 @@ class InfiniteGrid {
 
     // background fill color.
     this.ctx.fillRect(
-      0, 
-      0, 
-      this.dimensions.width, 
+      0,
+      0,
+      this.dimensions.width,
       this.s(this.dimensions.columnHeaderHeight));
-  
+
     for(let i = 0; i < this.dataProvider.columns.count; ++i) {
-      this.drawColumnHeader(i); 
+      this.drawColumnHeader(i);
     }
   }
 
@@ -180,9 +180,9 @@ class InfiniteGrid {
 
     const startingPosition = this.getCellFromXY();
     const startRow = startingPosition.row === -1 ? 0 : startingPosition.row;
-      
+
     const endingPosition = this.getCellFromXY(this.dimensions.width, this.dimensions.height)
-      
+
     for (var rowIndex = startRow; rowIndex < endingPosition.row + 1; rowIndex++) {
         const row = this.dataProvider.rows[rowIndex];
         if (!row) break;
@@ -199,27 +199,27 @@ class InfiniteGrid {
   }
 
   private isInViewport(
-    leftX:number, 
-    topY:number, 
-    width:number, 
+    leftX:number,
+    topY:number,
+    width:number,
     height:number):Boolean {
-      
+
     let viewportBounds = {
       minX: this.viewportOffset.x,
       maxX: this.dimensions.width + this.viewportOffset.x,
       minY: this.viewportOffset.y,
       maxY: this.dimensions.height + this.viewportOffset.y
     };
-    
+
     if (topY > viewportBounds.maxY) {
       return false;
-    } 
+    }
 
     if (topY + height < viewportBounds.minY) {
       return false;
     }
 
-    if (leftX + width > viewportBounds.minX && 
+    if (leftX + width > viewportBounds.minX &&
       leftX + width < viewportBounds.maxX) {
       return true;
     }
@@ -228,7 +228,7 @@ class InfiniteGrid {
       return true;
     }
 
-    
+
     return false;
   }
 
@@ -237,15 +237,15 @@ class InfiniteGrid {
   }
 
   private drawText(
-    fontSize:number, 
-    x:number, 
-    y:number, 
+    fontSize:number,
+    x:number,
+    y:number,
     text:string) {
-      
+
     // No need to draw text less than 4px
     if (fontSize < 5) {
       return;
-    }    
+    }
 
     this.ctx.font = `${fontSize}px Roboto`
     this.ctx.fillText(text, x, y);
@@ -253,14 +253,14 @@ class InfiniteGrid {
 
   private drawColumnHeader(columnIndex:number) {
       let leftX = this.s(((1 + columnIndex) * 5) + columnIndex * 100)
-      let topY = 0 
+      let topY = 0
       let innerWidth = this.s(100);
       let innerHeight = this.s(this.dimensions.columnHeaderHeight);
 
       if (!this.isInViewport(
-        leftX, 
-        topY + this.viewportOffset.y, 
-        innerWidth, 
+        leftX,
+        topY + this.viewportOffset.y,
+        innerWidth,
         innerHeight)) {
         return;
       }
@@ -269,15 +269,15 @@ class InfiniteGrid {
 
       this.ctx.fillStyle = 'orange';
       this.ctx.fillRect(
-        leftX - this.viewportOffset.x, 
-        topY, 
-        innerWidth, 
+        leftX - this.viewportOffset.x,
+        topY,
+        innerWidth,
         innerHeight);
 
       this.ctx.fillStyle = 'black';
       this.drawText(
         this.s(12),
-        leftX - this.viewportOffset.x, 
+        leftX - this.viewportOffset.x,
         topY + innerHeight / 2,
         String(columnIndex) + ' - column')
   }
@@ -291,12 +291,12 @@ class InfiniteGrid {
   }
 
   private isHovered(row:number, col:number) {
-    return this.mouseOverTargets.row === row || 
+    return this.mouseOverTargets.row === row ||
     this.mouseOverTargets.col === col;
   }
 
   private drawColumnItem(
-    rowIndex: number, 
+    rowIndex: number,
     row: any,
     columnIndex: number,
     column: any) {
@@ -307,7 +307,7 @@ class InfiniteGrid {
       }
 
       let leftX = this.s(((1 + columnIndex) * 5) + columnIndex * 100)
-      let topY = this.s(this.dimensions.columnHeaderHeight) + 
+      let topY = this.s(this.dimensions.columnHeaderHeight) +
                  this.s(((1 + rowIndex) * 5) + rowIndex * 100)
       let innerWidth = this.s(100);
       let innerHeight = this.s(100);
@@ -319,16 +319,16 @@ class InfiniteGrid {
       this.debug && this.debugInfo.drawnCells++;
 
       this.ctx.fillRect(
-        leftX - this.viewportOffset.x, 
-        topY - this.viewportOffset.y, 
-        innerWidth, 
+        leftX - this.viewportOffset.x,
+        topY - this.viewportOffset.y,
+        innerWidth,
         innerHeight);
 
       this.ctx.fillStyle = 'red';
 
       this.drawText(
         this.s(12),
-        leftX - this.viewportOffset.x, 
+        leftX - this.viewportOffset.x,
         topY + innerHeight / 2 - this.viewportOffset.y,
         String(rowIndex) + ' - ' + String(columnIndex))
     }

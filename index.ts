@@ -29,8 +29,8 @@ var dataProvider = {
 };
 
 var grid = new InfiniteGrid(
-    document.body, 
-    dimensions, 
+    document.body,
+    dimensions,
     dataProvider);
 grid.debug = false;
 grid.render();
