@@ -77,6 +77,10 @@ class InfiniteGrid {
     this.canvas.addEventListener(
       'mousemove',
       this.onMouseMove.bind(this))
+
+    window.addEventListener(
+      'keydown',
+      this.onKeyPress.bind(this))
   }
 
   private setup(dimensions:Dimensions) {
@@ -87,6 +91,49 @@ class InfiniteGrid {
     this.container.appendChild(this.canvas);
     this.setEventListeners();
     this.renderLoop();
+  }
+
+  private onKeyPress(e:KeyboardEvent) {
+    switch (e.key) {
+      case 'ArrowDown':
+        this.scrollDown()
+        break;
+      case 'ArrowUp':
+        this.scrollUp()
+        break;
+      case 'ArrowRight':
+        this.scrollRight()
+        break;
+      case 'ArrowLeft':
+        this.scrollLeft()
+        break;
+     default:
+      //noop
+    }
+  }
+
+  private scrollDown() {
+    this.viewportOffset.y += this.getColumnOuterHeight();
+  }
+
+  private scrollUp() {
+    if (this.viewportOffset.y <= 0) {
+      return;
+    }
+
+    this.viewportOffset.y -= this.getColumnOuterHeight();
+  }
+
+  private scrollLeft() {
+    if (this.viewportOffset.x <= 0) {
+      return;
+    }
+
+    this.viewportOffset.x -= this.getColumnOuterWidth();
+  }
+
+  private scrollRight() {
+    this.viewportOffset.x += this.getColumnOuterWidth();
   }
 
   private onMouseMove(e:MouseEvent) {
