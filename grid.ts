@@ -1,3 +1,5 @@
+import {XYPos} from './xypos'
+
 // https://github.com/Microsoft/TypeScript/issues/3429
 interface ObjectConstructor {
     assign(target: any, ...sources: any[]): any;
@@ -9,21 +11,14 @@ interface Dimensions {
   columnHeaderHeight: number,
 };
 
-interface Offset {
-  x: number,
-  y: number
-};
-
 class InfiniteGrid {
   private container: HTMLElement;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private dimensions: Dimensions;
   private dataProvider: any;
-  private viewportOffset: Offset;
-  private previousOffset: Offset;
-  private mouseOverPosition: Offset;
-  private previousMouseOverPosition: Offset;
+  private viewportOffset: XYPos;
+  private mouseOverPosition: XYPos;
   private mouseOverTargets: {col: Number, row: Number};
   private scalar: number;
   private oldScalar: number;
@@ -38,11 +33,9 @@ class InfiniteGrid {
     dimensions: Dimensions,
     dataProvider) {
 
-    this.viewportOffset = {x: 0, y: 0};
-    this.previousOffset = {x: 0, y: 0};
+    this.viewportOffset = new XYPos({x: 0, y: 0});
     this.mouseOverTargets = {col: -1, row: -1};
-    this.mouseOverPosition = {x: -1, y: -1};
-    this.previousMouseOverPosition = {x: -1, y: -1};
+    this.mouseOverPosition = new XYPos({x: -1, y: -1});
 
     this.scalar = 1;
     this.oldScalar = 1;
@@ -97,10 +90,8 @@ class InfiniteGrid {
   }
 
   private onMouseMove(e:MouseEvent) {
-    this.mouseOverPosition = {
-      x: e.clientX * window.devicePixelRatio,
-      y: e.clientY * window.devicePixelRatio
-    };
+    this.mouseOverPosition.x = e.clientX * window.devicePixelRatio;
+    this.mouseOverPosition.y = e.clientY * window.devicePixelRatio;
   }
 
   private getCellFromXY(x: number = 0, y: number = 0):{row:number, col:number} {
@@ -116,15 +107,15 @@ class InfiniteGrid {
 
   private calculateMouseOverTargets() {
     const position = this.getCellFromXY(
-      this.previousMouseOverPosition.x,
-      this.previousMouseOverPosition.y);
+      this.mouseOverPosition.x,
+      this.mouseOverPosition.y);
 
     this.mouseOverTargets = position;
   }
 
   private onMouseWheel(e:WheelEvent) {
-    this.viewportOffset.x += e.deltaX;
-    this.viewportOffset.y += e.deltaY;
+    this.viewportOffset.x = this.viewportOffset.x + e.deltaX;
+    this.viewportOffset.y = this.viewportOffset.y + e.deltaY;
 
     if (this.viewportOffset.x < 0) {
       this.viewportOffset.x = 0;
@@ -138,8 +129,8 @@ class InfiniteGrid {
   private renderLoop() {
     if (this.invalidated()) {
       this.calculateMouseOverTargets();
-      this.previousOffset = Object.assign({}, this.viewportOffset);
-      this.previousMouseOverPosition = Object.assign({}, this.mouseOverPosition);
+      this.viewportOffset.syncState();
+      this.mouseOverPosition.syncState();
       this.oldScalar = this.scalar;
 
       this.render();
@@ -151,10 +142,8 @@ class InfiniteGrid {
 
   private invalidated():boolean {
     return (
-      this.viewportOffset.x !== this.previousOffset.x ||
-      this.viewportOffset.y !== this.previousOffset.y ||
-      this.mouseOverPosition.x!== this.previousMouseOverPosition.x ||
-      this.mouseOverPosition.y!== this.previousMouseOverPosition.y ||
+      this.viewportOffset.invalidated() ||
+      this.mouseOverPosition.invalidated() ||
       this.scalar !== this.oldScalar);
   }
 
