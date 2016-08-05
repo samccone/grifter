@@ -161,8 +161,8 @@ class InfiniteGrid {
   }
 
   private onMouseWheel(e:WheelEvent) {
-    this.viewportOffset.x = this.viewportOffset.x + e.deltaX;
-    this.viewportOffset.y = this.viewportOffset.y + e.deltaY;
+    this.viewportOffset.x += e.deltaX;
+    this.viewportOffset.y += e.deltaY;
 
     if (this.viewportOffset.x < 0) {
       this.viewportOffset.x = 0;
