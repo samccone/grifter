@@ -6,17 +6,17 @@ interface Offset {
 };
 
 class XYPos extends IValidatable {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 
-    constructor({x, y}:Offset) {
-        super()
+  constructor({x, y}:Offset) {
+    super()
 
-        this.propValidations = ['x', 'y'];
-        this.x = x;
-        this.y = y;
-        this.syncState();
-    }
+    this.propValidations = ['x', 'y'];
+    this.x = x;
+    this.y = y;
+    this.syncState();
+  }
 }
 
 export {XYPos}

@@ -20,35 +20,35 @@ function generateRows(
         }
 
         return rows;
-}
-
-var dataProvider = {
-    rows: generateRows(1000, 100),
-    columns: {
-        count: 100
     }
-};
 
-var cellRenderer = new CellRenderer()
+    var dataProvider = {
+        rows: generateRows(1000, 100),
+        columns: {
+            count: 100
+        }
+    };
 
-var grid = new InfiniteGrid(
-    document.body,
-    dimensions,
-    dataProvider,
-    cellRenderer);
-    
-grid.debug = false;
-grid.render();
+    var cellRenderer = new CellRenderer()
 
-document.querySelector('#ranger').addEventListener('input', function(e:UIEvent) {
-    let target = <HTMLInputElement>e.target; 
-    grid.updateScalar(parseFloat(target.value))
-});
+    var grid = new InfiniteGrid(
+        document.body,
+        dimensions,
+        dataProvider,
+        cellRenderer);
 
-window.addEventListener('resize', function() {
-    grid.updateDimensions({
-        height: window.innerHeight * window.devicePixelRatio,
-        width: window.innerWidth * window.devicePixelRatio,
-        columnHeaderHeight: 30,
-    });
-});
+        grid.debug = false;
+        grid.render();
+
+        document.querySelector('#ranger').addEventListener('input', function(e:UIEvent) {
+            let target = <HTMLInputElement>e.target;
+            grid.updateScalar(parseFloat(target.value))
+        });
+
+        window.addEventListener('resize', function() {
+            grid.updateDimensions({
+                height: window.innerHeight * window.devicePixelRatio,
+                width: window.innerWidth * window.devicePixelRatio,
+                columnHeaderHeight: 30,
+            });
+        });
