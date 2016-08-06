@@ -111,13 +111,21 @@ class InfiniteGrid {
         case 'ArrowLeft':
           this.scrollLeft()
         break;
+        case ' ':
+          this.pageDown()
+        break;
         default:
           //noop
       }
     }
 
-    private scrollDown() {
-      this.viewportOffset.y += this.getColumnOuterHeight();
+    private pageDown() {
+      this.scrollDown(
+        Math.floor(this.dimensions.height / this.getColumnOuterHeight()));
+    }
+
+    private scrollDown(by:number=1) {
+      this.viewportOffset.y += (by * this.getColumnOuterHeight());
     }
 
     private scrollUp() {
