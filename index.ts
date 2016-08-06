@@ -35,9 +35,10 @@ var grid = new InfiniteGrid(
 grid.debug = false;
 grid.render();
 
-window.ranger.addEventListener('input', function(e) {
-    grid.updateScalar(parseFloat(e.target.value))
-})
+document.querySelector('#ranger').addEventListener('input', function(e:UIEvent) {
+    let target = <HTMLInputElement>e.target; 
+    grid.updateScalar(parseFloat(target.value))
+});
 
 window.addEventListener('resize', function() {
     grid.updateDimensions({
