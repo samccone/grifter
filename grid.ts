@@ -9,6 +9,9 @@ interface Dimensions {
   width: number,
   height: number,
   columnHeaderHeight: number,
+  cellHeight: number,
+  cellWidth: number,
+  cellMargin: number,
 };
 
 class InfiniteGrid {
@@ -284,9 +287,9 @@ class InfiniteGrid {
       }
 
       private drawColumnHeader(columnIndex:number) {
-        let leftX = this.s(((1 + columnIndex) * 5) + columnIndex * 100)
+        let leftX = this.s(((1 + columnIndex) * this.dimensions.cellMargin) + columnIndex * this.dimensions.cellWidth)
         let topY = 0
-        let innerWidth = this.s(100);
+        let innerWidth = this.s(this.dimensions.cellWidth);
         let innerHeight = this.s(this.dimensions.columnHeaderHeight);
 
         if (!this.isInViewport(
@@ -315,11 +318,11 @@ class InfiniteGrid {
       }
 
       private getColumnOuterWidth() {
-        return this.s(5 + 100);
+        return this.s(this.dimensions.cellMargin + this.dimensions.cellWidth);
       }
 
       private getColumnOuterHeight() {
-        return this.s(5 + 100);
+        return this.s(this.dimensions.cellMargin + this.dimensions.cellHeight);
       }
 
       isRowHovered(row:number):boolean {

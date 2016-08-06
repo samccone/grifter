@@ -24,11 +24,11 @@ class CellRenderer {
       grid:InfiniteGrid) {
         grid.ctx.fillStyle = this.getColumnFillColor(rowIndex, columnIndex, grid);
 
-        let leftX = grid.s(((1 + columnIndex) * 5) + columnIndex * 100)
+        let leftX = grid.s(((1 + columnIndex) * grid.dimensions.cellMargin) + columnIndex * grid.dimensions.cellWidth)
         let topY = grid.s(grid.dimensions.columnHeaderHeight) +
-          grid.s(((1 + rowIndex) * 5) + rowIndex * 100)
-        let innerWidth = grid.s(100);
-        let innerHeight = grid.s(100);
+          grid.s(((1 + rowIndex) * grid.dimensions.cellMargin) + rowIndex * grid.dimensions.cellHeight)
+        let innerWidth = grid.s(grid.dimensions.cellWidth);
+        let innerHeight = grid.s(grid.dimensions.cellHeight);
 
         if (!grid.isInViewport(leftX, topY, innerWidth, innerHeight)) {
           return;

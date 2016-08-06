@@ -4,7 +4,10 @@ import {CellRenderer} from './cell_renderer'
 var dimensions = {
     width: window.innerWidth * window.devicePixelRatio,
     height: window.innerHeight * window.devicePixelRatio,
-    columnHeaderHeight: 30,
+    columnHeaderHeight: 30 * window.devicePixelRatio,
+    cellHeight: 100 * window.devicePixelRatio,
+    cellWidth: 100 * window.devicePixelRatio,
+    cellMargin: 5 * window.devicePixelRatio,
 };
 
 function generateRows(
@@ -49,6 +52,9 @@ function generateRows(
             grid.updateDimensions({
                 height: window.innerHeight * window.devicePixelRatio,
                 width: window.innerWidth * window.devicePixelRatio,
-                columnHeaderHeight: 30,
+                columnHeaderHeight: 30 * window.devicePixelRatio,
+                cellHeight: 100 * window.devicePixelRatio,
+                cellWidth: 100 * window.devicePixelRatio,
+                cellMargin: 5 * window.devicePixelRatio,
             });
         });
