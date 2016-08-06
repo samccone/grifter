@@ -121,7 +121,8 @@ class InfiniteGrid {
     }
 
     private scrollUp() {
-      if (this.viewportOffset.y <= 0) {
+      if (this.viewportOffset.y - this.getColumnOuterHeight() < 0) {
+        this.viewportOffset.y = 0;
         return;
       }
 
@@ -129,7 +130,8 @@ class InfiniteGrid {
     }
 
     private scrollLeft() {
-      if (this.viewportOffset.x <= 0) {
+      if (this.viewportOffset.x - this.getColumnOuterHeight() < 0) {
+        this.viewportOffset.x = 0;
         return;
       }
 
