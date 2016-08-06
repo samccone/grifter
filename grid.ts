@@ -12,26 +12,29 @@ interface Dimensions {
 };
 
 class InfiniteGrid {
+  ctx: CanvasRenderingContext2D;
+  dimensions: Dimensions;
+  debugInfo = {
+    drawnColumnHeaders: 0,
+    drawnCells: 0
+  };
+  viewportOffset: XYPos;
   private container: HTMLElement;
   private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
-  private dimensions: Dimensions;
   private dataProvider: any;
-  private viewportOffset: XYPos;
   private mouseOverPosition: XYPos;
   private mouseOverTargets: {col: Number, row: Number};
   private scalar: number;
   private oldScalar: number;
-  private debugInfo = {
-    drawnColumnHeaders: 0,
-    drawnCells: 0
-  };
+  private cellRenderer;
+
   debug:boolean = false;
 
   constructor(
     container: HTMLElement,
     dimensions: Dimensions,
-    dataProvider) {
+    dataProvider,
+    cellRenderer) {
 
     this.viewportOffset = new XYPos({x: 0, y: 0});
     this.mouseOverTargets = {col: -1, row: -1};
@@ -43,6 +46,7 @@ class InfiniteGrid {
     this.container = container;
     this.dataProvider = dataProvider;
     this.dimensions = dimensions;
+    this.cellRenderer = cellRenderer;
     this.setup(dimensions);
   }
 
@@ -223,9 +227,10 @@ class InfiniteGrid {
         const row = this.dataProvider.rows[rowIndex];
         if (!row) break;
         for (var columnIndex = startingPosition.col; columnIndex < endingPosition.col + 1; columnIndex++) {
-            const column = row.columns[columnIndex];
-            if (!column) break;
-            this.drawColumnItem(rowIndex, row, columnIndex, column);
+            const cell = row.columns[columnIndex];
+            if (!cell) break;
+
+            this.cellRenderer.drawCell(rowIndex, columnIndex, cell, this);
         }
     }
 
@@ -234,7 +239,7 @@ class InfiniteGrid {
     this.debug && console.debug(JSON.stringify(this.debugInfo));
   }
 
-  private isInViewport(
+  isInViewport(
     leftX:number,
     topY:number,
     width:number,
@@ -266,25 +271,6 @@ class InfiniteGrid {
 
 
     return false;
-  }
-
-  private s(val:number):number {
-    return val * this.scalar;
-  }
-
-  private drawText(
-    fontSize:number,
-    x:number,
-    y:number,
-    text:string) {
-
-    // No need to draw text less than 4px
-    if (fontSize < 5) {
-      return;
-    }
-
-    this.ctx.font = `${fontSize}px Roboto`
-    this.ctx.fillText(text, x, y);
   }
 
   private drawColumnHeader(columnIndex:number) {
@@ -326,48 +312,36 @@ class InfiniteGrid {
     return this.s(5 + 100);
   }
 
-  private isHovered(row:number, col:number) {
-    return this.mouseOverTargets.row === row ||
-    this.mouseOverTargets.col === col;
+  isRowHovered(row:number):boolean {
+    return this.mouseOverTargets.row === row;
   }
 
-  private drawColumnItem(
-    rowIndex: number,
-    row: any,
-    columnIndex: number,
-    column: any) {
-      if (this.isHovered(rowIndex, columnIndex)) {
-        this.ctx.fillStyle = '#AAA';
-      } else {
-        this.ctx.fillStyle = 'grey';
-      }
+  isColumnHovered(col:number):boolean {
+    return this.mouseOverTargets.col === col;    
+  }
 
-      let leftX = this.s(((1 + columnIndex) * 5) + columnIndex * 100)
-      let topY = this.s(this.dimensions.columnHeaderHeight) +
-                 this.s(((1 + rowIndex) * 5) + rowIndex * 100)
-      let innerWidth = this.s(100);
-      let innerHeight = this.s(100);
+  isHovered(row:number, col:number):boolean {
+    return this.isRowHovered(row) && this.isColumnHovered(col);
+  }
+  
+  s(val:number):number {
+    return val * this.scalar;
+  }
 
-      if (!this.isInViewport(leftX, topY, innerWidth, innerHeight)) {
-        return;
-      }
+  drawText(
+    fontSize:number,
+    x:number,
+    y:number,
+    text:string) {
 
-      this.debug && this.debugInfo.drawnCells++;
-
-      this.ctx.fillRect(
-        leftX - this.viewportOffset.x,
-        topY - this.viewportOffset.y,
-        innerWidth,
-        innerHeight);
-
-      this.ctx.fillStyle = 'red';
-
-      this.drawText(
-        this.s(12),
-        leftX - this.viewportOffset.x,
-        topY + innerHeight / 2 - this.viewportOffset.y,
-        String(rowIndex) + ' - ' + String(columnIndex))
+    // No need to draw text less than 4px
+    if (fontSize < 5) {
+      return;
     }
+
+    this.ctx.font = `${fontSize}px Roboto`
+    this.ctx.fillText(text, x, y);
+  }
 }
 
 export {InfiniteGrid}

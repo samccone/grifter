@@ -1,4 +1,5 @@
 import {InfiniteGrid} from './grid';
+import {CellRenderer} from './cell_renderer'
 
 var dimensions = {
     width: window.innerWidth * window.devicePixelRatio,
@@ -28,10 +29,14 @@ var dataProvider = {
     }
 };
 
+var cellRenderer = new CellRenderer()
+
 var grid = new InfiniteGrid(
     document.body,
     dimensions,
-    dataProvider);
+    dataProvider,
+    cellRenderer);
+    
 grid.debug = false;
 grid.render();
 
