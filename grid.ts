@@ -217,7 +217,7 @@ class InfiniteGrid {
     renderColumnHeaders(startRowIndex:number, endRowIndex:number) {
       this.ctx.fillStyle = 'black';
       this.ctx.fillRect(
-        0,
+        this.s(this.dimensions.rowGuideWidth),
         0,
         this.dimensions.width,
         this.s(this.dimensions.columnHeaderHeight));
@@ -225,6 +225,13 @@ class InfiniteGrid {
       for(let i = startRowIndex; i < endRowIndex; ++i) {
         this.drawColumnHeader(i);
       }
+
+      this.ctx.fillStyle = 'white';
+      this.ctx.fillRect(
+        0,
+        0,
+        this.s(this.dimensions.rowGuideWidth),
+        this.s(this.dimensions.columnHeaderHeight));
     }
 
     renderRowGuide(rowIndex:number) {
