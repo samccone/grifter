@@ -1,4 +1,3 @@
-dev: in 2 tabs run in this order
+dev: 
 
-npm run typescript
-npm run rollup
+`npm run watch`
