@@ -90,6 +90,10 @@ class InfiniteGrid {
       window.addEventListener(
         'keydown',
         this.onKeyPress.bind(this))
+
+      this.canvas.addEventListener(
+        'click',
+        this.onClick.bind(this));
     }
 
     private setup(dimensions:Dimensions) {
@@ -153,6 +157,14 @@ class InfiniteGrid {
 
     private scrollRight() {
       this.viewportOffset.x += this.getColumnOuterWidth();
+    }
+
+    private onClick(e:MouseEvent) {
+      /**
+      // TODO: emit event when clicked, ensure the target is visible also.
+      console.log(this.getCellFromXY(e.layerX * window.devicePixelRatio,
+                                     e.layerX * window.devicePixelRatio));
+       */
     }
 
     private onMouseMove(e:MouseEvent) {
