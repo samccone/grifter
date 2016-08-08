@@ -33,7 +33,11 @@ class CellRenderer {
         let innerWidth = grid.s(grid.dimensions.cellWidth);
         let innerHeight = grid.s(grid.dimensions.cellHeight);
 
-        if (!grid.isInViewport(leftX, topY, innerWidth, innerHeight)) {
+        if (!grid.isInViewport(
+          leftX - grid.s(grid.dimensions.rowGuideWidth),
+          topY - grid.s(grid.dimensions.columnHeaderHeight),
+          innerWidth,
+          innerHeight)) {
           return;
         }
 
