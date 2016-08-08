@@ -8,6 +8,7 @@ var dimensions = {
     cellHeight: 100 * window.devicePixelRatio,
     cellWidth: 100 * window.devicePixelRatio,
     cellMargin: 5 * window.devicePixelRatio,
+    rowGuideWidth: 150 * window.devicePixelRatio,
 };
 
 function generateRows(
@@ -56,5 +57,6 @@ function generateRows(
                 cellHeight: 100 * window.devicePixelRatio,
                 cellWidth: 100 * window.devicePixelRatio,
                 cellMargin: 5 * window.devicePixelRatio,
+                rowGuideWidth: 150 * window.devicePixelRatio,
             });
         });

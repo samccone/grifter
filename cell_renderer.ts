@@ -24,7 +24,10 @@ class CellRenderer {
       grid:InfiniteGrid) {
         grid.ctx.fillStyle = this.getColumnFillColor(rowIndex, columnIndex, grid);
 
-        let leftX = grid.s(((1 + columnIndex) * grid.dimensions.cellMargin) + columnIndex * grid.dimensions.cellWidth)
+        let leftX = grid.s(grid.dimensions.rowGuideWidth) +
+          grid.s(((1 + columnIndex) * grid.dimensions.cellMargin) +
+                 columnIndex * grid.dimensions.cellWidth);
+
         let topY = grid.s(grid.dimensions.columnHeaderHeight) +
           grid.s(((1 + rowIndex) * grid.dimensions.cellMargin) + rowIndex * grid.dimensions.cellHeight)
         let innerWidth = grid.s(grid.dimensions.cellWidth);
