@@ -214,8 +214,15 @@ class InfiniteGrid {
         this.scalar !== this.oldScalar);
     }
 
-    renderColumnHeaders() {
-      for(let i = 0; i < this.dataProvider.columns.count; ++i) {
+    renderColumnHeaders(startRowIndex:number, endRowIndex:number) {
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(
+        0,
+        0,
+        this.dimensions.width,
+        this.s(this.dimensions.columnHeaderHeight));
+
+      for(let i = startRowIndex; i < endRowIndex; ++i) {
         this.drawColumnHeader(i);
       }
     }
@@ -250,16 +257,19 @@ class InfiniteGrid {
         this.debugInfo.drawnRowGuides = this.debugInfo.drawnCells = this.debugInfo.drawnColumnHeaders = 0;
 
       const startingPosition = this.getCellFromXY();
-      const startRow = Math.max(0, startingPosition.row);
-      const startingCol = Math.max(0, startingPosition.col);
-
       const endingPosition = this.getCellFromXY(this.dimensions.width, this.dimensions.height)
 
-      for (var rowIndex = startRow; rowIndex < endingPosition.row + 1; rowIndex++) {
+      const startRowIndex = Math.max(0, startingPosition.row);
+      const endRowIndex = Math.max(0,endingPosition.row) + 1;
+      const startColIndex = Math.max(0, startingPosition.col);
+      const endColIndex = Math.max(0, endingPosition.col) + 1;
+
+
+      for (var rowIndex = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
         const row = this.dataProvider.rows[rowIndex];
         if (!row) break;
 
-        for (var columnIndex = startingCol; columnIndex < endingPosition.col + 1; columnIndex++) {
+        for (var columnIndex = startColIndex; columnIndex < endColIndex; columnIndex++) {
           const cell = row.columns[columnIndex];
           if (!cell) break;
 
@@ -269,7 +279,7 @@ class InfiniteGrid {
         this.renderRowGuide(rowIndex);
       }
 
-      this.renderColumnHeaders();
+      this.renderColumnHeaders(startColIndex, endColIndex);
 
       this.debug && console.debug(JSON.stringify(this.debugInfo));
     }
