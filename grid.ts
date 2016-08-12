@@ -64,12 +64,12 @@ class InfiniteGrid {
         'width',
         String(dimensions.width));
 
-      this.canvas.setAttribute(
-        'height',
-        String(dimensions.height));
+        this.canvas.setAttribute(
+          'height',
+          String(dimensions.height));
 
-        this.canvas.style.width = `${dimensions.width / window.devicePixelRatio}px`;
-        this.canvas.style.height = `${dimensions.height / window.devicePixelRatio}px`;
+          this.canvas.style.width = `${dimensions.width / window.devicePixelRatio}px`;
+          this.canvas.style.height = `${dimensions.height / window.devicePixelRatio}px`;
     }
 
     updateDimensions(dimensions:Dimensions) {
@@ -83,17 +83,17 @@ class InfiniteGrid {
         'wheel',
         this.onMouseWheel.bind(this))
 
-      this.canvas.addEventListener(
-        'mousemove',
-        this.onMouseMove.bind(this))
+        this.canvas.addEventListener(
+          'mousemove',
+          this.onMouseMove.bind(this))
 
-      window.addEventListener(
-        'keydown',
-        this.onKeyPress.bind(this))
+          window.addEventListener(
+            'keydown',
+            this.onKeyPress.bind(this))
 
-      this.canvas.addEventListener(
-        'click',
-        this.onClick.bind(this));
+            this.canvas.addEventListener(
+              'click',
+              this.onClick.bind(this));
     }
 
     private setup(dimensions:Dimensions) {
@@ -163,7 +163,7 @@ class InfiniteGrid {
       /**
       // TODO: emit event when clicked, ensure the target is visible also.
       console.log(this.getCellFromXY(e.layerX * window.devicePixelRatio,
-                                     e.layerX * window.devicePixelRatio));
+      e.layerX * window.devicePixelRatio));
        */
     }
 
@@ -179,8 +179,8 @@ class InfiniteGrid {
       return {
         col: Math.floor(
           (xWithOffset - this.s(this.dimensions.rowGuideWidth)) / this.getColumnOuterWidth()),
-        row: Math.floor((
-          yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight())
+          row: Math.floor((
+            yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight())
       }
     }
 
@@ -189,7 +189,7 @@ class InfiniteGrid {
         this.mouseOverPosition.x,
         this.mouseOverPosition.y);
 
-      this.mouseOverTargets = position;
+        this.mouseOverTargets = position;
     }
 
     private onMouseWheel(e:WheelEvent) {
@@ -222,8 +222,8 @@ class InfiniteGrid {
     private invalidated():boolean {
       return (
         this.viewportOffset.invalidated() ||
-        this.mouseOverPosition.invalidated() ||
-        this.scalar !== this.oldScalar);
+          this.mouseOverPosition.invalidated() ||
+          this.scalar !== this.oldScalar);
     }
 
     renderColumnHeaders(startRowIndex:number, endRowIndex:number) {
@@ -234,16 +234,16 @@ class InfiniteGrid {
         this.dimensions.width,
         this.s(this.dimensions.columnHeaderHeight));
 
-      for(let i = startRowIndex; i < endRowIndex; ++i) {
-        this.drawColumnHeader(i);
-      }
+        for(let i = startRowIndex; i < endRowIndex; ++i) {
+          this.drawColumnHeader(i);
+        }
 
-      this.ctx.fillStyle = 'white';
-      this.ctx.fillRect(
-        0,
-        0,
-        this.s(this.dimensions.rowGuideWidth),
-        this.s(this.dimensions.columnHeaderHeight));
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(
+          0,
+          0,
+          this.s(this.dimensions.rowGuideWidth),
+          this.s(this.dimensions.columnHeaderHeight));
     }
 
     renderRowGuide(rowIndex:number) {
@@ -252,9 +252,9 @@ class InfiniteGrid {
 
       if (!this.isInViewport(
         this.viewportOffset.x,
-        topY - this.s(this.dimensions.columnHeaderHeight),
-        this.s(this.dimensions.rowGuideWidth),
-        this.s(this.dimensions.cellHeight))) {
+      topY - this.s(this.dimensions.columnHeaderHeight),
+      this.s(this.dimensions.rowGuideWidth),
+      this.s(this.dimensions.cellHeight))) {
         return;
       }
 
@@ -348,9 +348,9 @@ class InfiniteGrid {
 
         if (!this.isInViewport(
           leftX,
-          topY + this.viewportOffset.y,
-          innerWidth,
-          innerHeight)) {
+        topY + this.viewportOffset.y,
+        innerWidth,
+        innerHeight)) {
           return;
         }
 
@@ -363,12 +363,12 @@ class InfiniteGrid {
           innerWidth,
           innerHeight);
 
-        this.ctx.fillStyle = 'black';
-        this.drawText(
-          this.s(12),
-          leftX - this.viewportOffset.x,
-          topY + innerHeight / 2,
-          String(columnIndex) + ' - column')
+          this.ctx.fillStyle = 'black';
+          this.drawText(
+            this.s(12),
+            leftX - this.viewportOffset.x,
+            topY + innerHeight / 2,
+            String(columnIndex) + ' - column')
       }
 
       private getColumnOuterWidth() {
