@@ -159,12 +159,32 @@ class InfiniteGrid {
       this.viewportOffset.x += this.getColumnOuterWidth();
     }
 
+
+    private isOverRowGuide(x: number, y:number):boolean {
+      return x <= this.s(this.dimensions.rowGuideWidth)
+    }
+
+    private isOverColumnHeader(x: number, y:number):boolean {
+      return y <= this.s(this.dimensions.columnHeaderHeight);
+    }
+
     private onClick(e:MouseEvent) {
-      /**
-      // TODO: emit event when clicked, ensure the target is visible also.
-      console.log(this.getCellFromXY(e.layerX * window.devicePixelRatio,
-      e.layerX * window.devicePixelRatio));
-       */
+      const x = e.layerX * window.devicePixelRatio;
+      const y = e.layerY * window.devicePixelRatio;
+
+      if (this.isOverRowGuide(x, y)) {
+        return
+      }
+
+      if (this.isOverColumnHeader(x, y)) {
+        return
+      }
+
+      const coors = this.getCellFromXY(x, y);
+
+      if (this.cellRenderer.isCellAtCoorsVisible(coors.row, coors.col, this)) {
+        console.log(coors);
+      }
     }
 
     private onMouseMove(e:MouseEvent) {
