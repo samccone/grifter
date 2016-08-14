@@ -26,10 +26,15 @@ function generateRows(
     return rows;
   }
 
-  var dataProvider = {
-    rows: generateRows(1000, 100),
+  var dataProvider:{
+    rows: Array<{columns: any[]}>;
     columns: {
-      count: 100
+      count: number
+    }
+  } = {
+    rows: generateRows(10, 50),
+    columns: {
+      count: 50
     }
   };
 
