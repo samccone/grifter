@@ -66,12 +66,12 @@ class InfiniteGrid {
         'width',
         String(dimensions.width));
 
-        this.canvas.setAttribute(
-          'height',
-          String(dimensions.height));
+      this.canvas.setAttribute(
+        'height',
+        String(dimensions.height));
 
-          this.canvas.style.width = `${dimensions.width / window.devicePixelRatio}px`;
-          this.canvas.style.height = `${dimensions.height / window.devicePixelRatio}px`;
+        this.canvas.style.width = `${dimensions.width / window.devicePixelRatio}px`;
+        this.canvas.style.height = `${dimensions.height / window.devicePixelRatio}px`;
     }
 
     updateDimensions(dimensions:Dimensions) {
@@ -85,17 +85,17 @@ class InfiniteGrid {
         'wheel',
         this.onMouseWheel.bind(this))
 
-        this.canvas.addEventListener(
-          'mousemove',
-          this.onMouseMove.bind(this))
+      this.canvas.addEventListener(
+        'mousemove',
+        this.onMouseMove.bind(this))
 
-          window.addEventListener(
-            'keydown',
-            this.onKeyPress.bind(this))
+      this.canvas.addEventListener(
+        'click',
+        this.onClick.bind(this));
 
-            this.canvas.addEventListener(
-              'click',
-              this.onClick.bind(this));
+      window.addEventListener(
+        'keydown',
+        this.onKeyPress.bind(this))
     }
 
     private setup(dimensions:Dimensions) {
@@ -161,7 +161,6 @@ class InfiniteGrid {
       this.viewportOffset.x += this.getColumnOuterWidth();
     }
 
-
     private isOverRowGuide(x: number, y:number):boolean {
       return x <= this.s(this.dimensions.rowGuideWidth)
     }
@@ -214,12 +213,26 @@ class InfiniteGrid {
         this.mouseOverPosition.x,
         this.mouseOverPosition.y);
 
-        this.mouseOverTargets = position;
+      this.mouseOverTargets = position;
     }
 
     private onMouseWheel(e:WheelEvent) {
-      this.viewportOffset.x += e.deltaX;
-      this.viewportOffset.y += e.deltaY;
+      let {deltaY, deltaX} = e;
+
+      let boundingCell = this.getCellFromXY(
+        this.dimensions.width + deltaX,
+        this.dimensions.height + deltaY, Math.ceil);
+
+      if (deltaX > 0 && boundingCell.col > this.dataProvider.columns.count) {
+        deltaX = 0;
+      }
+
+      if (deltaY > 0 && boundingCell.row > this.dataProvider.rows.length) {
+        deltaY = 0;
+      }
+
+      this.viewportOffset.x += deltaX;
+      this.viewportOffset.y += deltaY;
 
       if (this.viewportOffset.x < 0) {
         this.viewportOffset.x = 0;
@@ -259,27 +272,28 @@ class InfiniteGrid {
         this.dimensions.width,
         this.s(this.dimensions.columnHeaderHeight));
 
-        for(let i = startRowIndex; i < endRowIndex; ++i) {
-          this.drawColumnHeader(i);
-        }
+      for(let i = startRowIndex; i < endRowIndex; ++i) {
+        this.drawColumnHeader(i);
+      }
 
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(
-          0,
-          0,
-          this.s(this.dimensions.rowGuideWidth),
-          this.s(this.dimensions.columnHeaderHeight));
+      this.ctx.fillStyle = 'white';
+      this.ctx.fillRect(
+        0,
+        0,
+        this.s(this.dimensions.rowGuideWidth),
+        this.s(this.dimensions.columnHeaderHeight));
     }
 
     renderRowGuide(rowIndex:number) {
       let topY = this.s(this.dimensions.columnHeaderHeight) +
-        this.s(((1 + rowIndex) * this.dimensions.cellMargin) + rowIndex * this.dimensions.cellHeight)
+        this.s(((1 + rowIndex) * this.dimensions.cellMargin) +
+               rowIndex * this.dimensions.cellHeight);
 
       if (!this.isInViewport(
         this.viewportOffset.x,
-      topY - this.s(this.dimensions.columnHeaderHeight),
-      this.s(this.dimensions.rowGuideWidth),
-      this.s(this.dimensions.cellHeight))) {
+        topY - this.s(this.dimensions.columnHeaderHeight),
+        this.s(this.dimensions.rowGuideWidth),
+        this.s(this.dimensions.cellHeight))) {
         return;
       }
 
@@ -288,10 +302,11 @@ class InfiniteGrid {
       }
 
       this.ctx.fillStyle = 'teal';
-      this.ctx.fillRect(0,
-                        topY - this.viewportOffset.y,
-                        this.s(this.dimensions.rowGuideWidth),
-                        this.s(this.dimensions.cellHeight));
+      this.ctx.fillRect(
+        0,
+        topY - this.viewportOffset.y,
+        this.s(this.dimensions.rowGuideWidth),
+        this.s(this.dimensions.cellHeight));
     }
 
     render() {
@@ -307,12 +322,14 @@ class InfiniteGrid {
         Math.ceil);
 
       const startRowIndex = Math.max(0, startingPosition.row);
-      const endRowIndex = Math.max(0,endingPosition.row);
+      const endRowIndex = Math.max(0, endingPosition.row);
       const startColIndex = Math.max(0, startingPosition.col);
-      const endColIndex = Math.max(0, endingPosition.col);
+      const endColIndex = Math.min(
+        this.dataProvider.columns.count,
+        Math.max(0, endingPosition.col));
 
 
-      for (var rowIndex = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
+       for (var rowIndex = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
         const row = this.dataProvider.rows[rowIndex];
         if (!row) break;
 
@@ -391,12 +408,12 @@ class InfiniteGrid {
           innerWidth,
           innerHeight);
 
-          this.ctx.fillStyle = 'black';
-          this.drawText(
-            this.s(12),
-            leftX - this.viewportOffset.x,
-            topY + innerHeight / 2,
-            String(columnIndex) + ' - column')
+        this.ctx.fillStyle = 'black';
+        this.drawText(
+          this.s(12),
+          leftX - this.viewportOffset.x,
+          topY + innerHeight / 2,
+          String(columnIndex) + ' - column')
       }
 
       private getColumnOuterWidth() {
