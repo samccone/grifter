@@ -172,14 +172,17 @@ class InfiniteGrid {
       this.mouseOverPosition.y = e.clientY * window.devicePixelRatio;
     }
 
-    private getCellFromXY(x: number = 0, y: number = 0):{row:number, col:number} {
+    private getCellFromXY(
+      x: number = 0,
+      y: number = 0,
+      roundFn: (x:number) => number = Math.floor):{row:number, col:number} {
       let xWithOffset = x + this.viewportOffset.x;
       let yWithOffset = y + this.viewportOffset.y;
 
       return {
-        col: Math.floor(
+        col: roundFn(
           (xWithOffset - this.s(this.dimensions.rowGuideWidth)) / this.getColumnOuterWidth()),
-          row: Math.floor((
+          row: roundFn((
             yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight())
       }
     }
@@ -276,12 +279,15 @@ class InfiniteGrid {
         this.debugInfo.drawnRowGuides = this.debugInfo.drawnCells = this.debugInfo.drawnColumnHeaders = 0;
 
       const startingPosition = this.getCellFromXY();
-      const endingPosition = this.getCellFromXY(this.dimensions.width, this.dimensions.height)
+      const endingPosition = this.getCellFromXY(
+        this.dimensions.width,
+        this.dimensions.height,
+        Math.ceil);
 
       const startRowIndex = Math.max(0, startingPosition.row);
-      const endRowIndex = Math.max(0,endingPosition.row) + 1;
+      const endRowIndex = Math.max(0,endingPosition.row);
       const startColIndex = Math.max(0, startingPosition.col);
-      const endColIndex = Math.max(0, endingPosition.col) + 1;
+      const endColIndex = Math.max(0, endingPosition.col);
 
 
       for (var rowIndex = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
