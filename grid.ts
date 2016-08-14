@@ -41,6 +41,8 @@ class InfiniteGrid {
     dataProvider,
     cellRenderer) {
 
+      cellRenderer.grid = this;
+
       this.viewportOffset = new XYPos({x: 0, y: 0});
       this.mouseOverTargets = {col: -1, row: -1};
       this.mouseOverPosition = new XYPos({x: -1, y: -1});

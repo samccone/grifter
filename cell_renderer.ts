@@ -1,50 +1,49 @@
 import {InfiniteGrid} from './grid'
 
 class CellRenderer {
+  grid: InfiniteGrid;
+
   private getColumnFillColor(
     rowIndex:number,
-    colIndex:number,
-    grid:InfiniteGrid):string {
+    colIndex:number):string {
 
-      if (grid.isHovered(rowIndex, colIndex)) {
+      if (this.grid.isHovered(rowIndex, colIndex)) {
         return 'grey';
       }
 
-      if (grid.isColumnHovered(colIndex) || grid.isRowHovered(rowIndex)) {
+      if (this.grid.isColumnHovered(colIndex) || this.grid.isRowHovered(rowIndex)) {
         return '#AAA';
       }
 
       return 'grey';
     }
 
-    isCellAtCoorsVisible(rowIndex: number, colIndex: number, grid:InfiniteGrid) {
+    isCellAtCoorsVisible(rowIndex: number, colIndex: number) {
       let {leftX, topY, innerWidth, innerHeight} = this.getCellDrawCoords(
         rowIndex,
-        colIndex,
-        grid);
+        colIndex);
 
       return this.isCellPositionInViewport(
         leftX,
         topY,
         innerWidth,
-        innerHeight,
-        grid);
+        innerHeight);
     }
 
-    private getCellDrawCoords(rowIndex: number, colIndex: number, grid:InfiniteGrid):{
+    private getCellDrawCoords(rowIndex: number, colIndex: number):{
       leftX: number,
       topY: number,
       innerWidth: number,
       innerHeight: number,
     } {
-        let leftX = grid.s(grid.dimensions.rowGuideWidth) +
-          grid.s(((1 + colIndex) * grid.dimensions.cellMargin) +
-                 colIndex * grid.dimensions.cellWidth);
-        let topY = grid.s(grid.dimensions.columnHeaderHeight) +
-          grid.s(((1 + rowIndex) * grid.dimensions.cellMargin) + rowIndex * grid.dimensions.cellHeight)
+        let leftX = this.grid.s(this.grid.dimensions.rowGuideWidth) +
+          this.grid.s(((1 + colIndex) * this.grid.dimensions.cellMargin) +
+                 colIndex * this.grid.dimensions.cellWidth);
+        let topY = this.grid.s(this.grid.dimensions.columnHeaderHeight) +
+          this.grid.s(((1 + rowIndex) * this.grid.dimensions.cellMargin) + rowIndex * this.grid.dimensions.cellHeight)
 
-        let innerWidth = grid.s(grid.dimensions.cellWidth);
-        let innerHeight = grid.s(grid.dimensions.cellHeight);
+        let innerWidth = this.grid.s(this.grid.dimensions.cellWidth);
+        let innerHeight = this.grid.s(this.grid.dimensions.cellHeight);
 
         return {
           leftX,
@@ -58,13 +57,11 @@ class CellRenderer {
       leftX:number,
       topY:number,
       innerWidth:number,
-      innerHeight:number,
-      grid:InfiniteGrid
-    ):Boolean {
+      innerHeight:number):Boolean {
 
-      return grid.isInViewport(
-        leftX - grid.s(grid.dimensions.rowGuideWidth),
-        topY - grid.s(grid.dimensions.columnHeaderHeight),
+      return this.grid.isInViewport(
+        leftX - this.grid.s(this.grid.dimensions.rowGuideWidth),
+        topY - this.grid.s(this.grid.dimensions.columnHeaderHeight),
         innerWidth,
         innerHeight)
     }
@@ -72,29 +69,29 @@ class CellRenderer {
     drawCell(
       rowIndex:number,
       columnIndex:number,
-      cell:any,
-      grid:InfiniteGrid) {
-        grid.ctx.fillStyle = this.getColumnFillColor(rowIndex, columnIndex, grid);
+      cell:any) {
+        this.grid.ctx.fillStyle = this.getColumnFillColor(
+          rowIndex,
+          columnIndex);
 
         let {leftX, topY, innerWidth, innerHeight} = this.getCellDrawCoords(
             rowIndex,
-            columnIndex,
-            grid);
+            columnIndex);
 
-        grid.debug && grid.debugInfo.drawnCells++;
+        this.grid.debug && this.grid.debugInfo.drawnCells++;
 
-        grid.ctx.fillRect(
-          leftX - grid.viewportOffset.x,
-          topY - grid.viewportOffset.y,
+        this.grid.ctx.fillRect(
+          leftX - this.grid.viewportOffset.x,
+          topY - this.grid.viewportOffset.y,
           innerWidth,
           innerHeight);
 
-          grid.ctx.fillStyle = 'red';
+          this.grid.ctx.fillStyle = 'red';
 
-          grid.drawText(
-            grid.s(12),
-            leftX - grid.viewportOffset.x,
-            topY + innerHeight / 2 - grid.viewportOffset.y,
+          this.grid.drawText(
+            this.grid.s(12),
+            leftX - this.grid.viewportOffset.x,
+            topY + innerHeight / 2 - this.grid.viewportOffset.y,
             String(rowIndex) + ' - ' + String(columnIndex))
       }
 }
