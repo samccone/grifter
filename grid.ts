@@ -337,7 +337,18 @@ class InfiniteGrid {
           const cell = row.columns[columnIndex];
           if (!cell) break;
 
-          this.cellRenderer.drawCell(rowIndex, columnIndex, cell, this);
+          this.ctx.save()
+          let cellCoords = this.cellRenderer.getCellDrawCoords(rowIndex, columnIndex);
+          this.ctx.translate(
+            cellCoords.leftX - this.viewportOffset.x,
+            cellCoords.topY - this.viewportOffset.y);
+
+          this.cellRenderer.drawCell(
+            rowIndex,
+            columnIndex,
+            cell);
+
+          this.ctx.restore()
         }
 
         this.renderRowGuide(rowIndex);

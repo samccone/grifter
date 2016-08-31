@@ -11,7 +11,8 @@ class CellRenderer {
         return 'grey';
       }
 
-      if (this.grid.isColumnHovered(colIndex) || this.grid.isRowHovered(rowIndex)) {
+      if (this.grid.isColumnHovered(colIndex) ||
+          this.grid.isRowHovered(rowIndex)) {
         return '#AAA';
       }
 
@@ -30,7 +31,7 @@ class CellRenderer {
         innerHeight);
     }
 
-    private getCellDrawCoords(rowIndex: number, colIndex: number):{
+    getCellDrawCoords(rowIndex: number, colIndex: number):{
       leftX: number,
       topY: number,
       innerWidth: number,
@@ -40,7 +41,8 @@ class CellRenderer {
           this.grid.s(((1 + colIndex) * this.grid.dimensions.cellMargin) +
                  colIndex * this.grid.dimensions.cellWidth);
         let topY = this.grid.s(this.grid.dimensions.columnHeaderHeight) +
-          this.grid.s(((1 + rowIndex) * this.grid.dimensions.cellMargin) + rowIndex * this.grid.dimensions.cellHeight)
+          this.grid.s(((1 + rowIndex) * this.grid.dimensions.cellMargin) +
+                      rowIndex * this.grid.dimensions.cellHeight);
 
         let innerWidth = this.grid.s(this.grid.dimensions.cellWidth);
         let innerHeight = this.grid.s(this.grid.dimensions.cellHeight);
@@ -74,25 +76,18 @@ class CellRenderer {
           rowIndex,
           columnIndex);
 
-        let {leftX, topY, innerWidth, innerHeight} = this.getCellDrawCoords(
-            rowIndex,
-            columnIndex);
-
+        let width = this.grid.s(this.grid.dimensions.cellWidth)
+        let height = this.grid.s(this.grid.dimensions.cellHeight)
         this.grid.debug && this.grid.debugInfo.drawnCells++;
 
-        this.grid.ctx.fillRect(
-          leftX - this.grid.viewportOffset.x,
-          topY - this.grid.viewportOffset.y,
-          innerWidth,
-          innerHeight);
+        this.grid.ctx.fillRect(0, 0, width, height);
+        this.grid.ctx.fillStyle = 'red';
 
-          this.grid.ctx.fillStyle = 'red';
-
-          this.grid.drawText(
-            this.grid.s(12),
-            leftX - this.grid.viewportOffset.x,
-            topY + innerHeight / 2 - this.grid.viewportOffset.y,
-            String(rowIndex) + ' - ' + String(columnIndex))
+        this.grid.drawText(
+          this.grid.s(12),
+          0,
+          innerHeight / 2,
+          String(rowIndex) + ' - ' + String(columnIndex))
       }
 }
 
