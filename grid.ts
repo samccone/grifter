@@ -1,4 +1,5 @@
 import {XYPos} from './xypos'
+import {Scrollbars} from './scrollbars'
 
 // https://github.com/Microsoft/TypeScript/issues/3429
 interface ObjectConstructor {
@@ -24,16 +25,17 @@ class InfiniteGrid {
     drawnRowGuides: 0,
   };
   viewportOffset: XYPos;
-  private container: HTMLElement;
-  private canvas: HTMLCanvasElement;
-  private dataProvider: any;
-  private mouseOverPosition: XYPos;
-  private mouseOverTargets: {col: Number, row: Number};
-  private scalar: number;
-  private oldScalar: number;
-  private cellRenderer;
+  private container: HTMLElement
+  private canvas: HTMLCanvasElement
+  private dataProvider: any
+  private mouseOverPosition: XYPos
+  private mouseOverTargets: {col: Number, row: Number}
+  private scalar: number
+  private oldScalar: number
+  private cellRenderer
+  private scrollbars: Scrollbars
 
-  debug:boolean = false;
+  debug:boolean = false
 
   constructor(
     container: HTMLElement,
@@ -105,6 +107,13 @@ class InfiniteGrid {
       this.ctx = this.canvas.getContext('2d');
       this.container.appendChild(this.canvas);
       this.setEventListeners();
+      this.scrollbars = new Scrollbars(
+        dimensions,
+        this.ctx,
+        this,
+        this.viewportOffset
+      );
+
       this.renderLoop();
     }
 
@@ -214,6 +223,13 @@ class InfiniteGrid {
         this.mouseOverPosition.y);
 
       this.mouseOverTargets = position;
+    }
+
+    getMaxBounds(): {x: number, y: number} {
+      return {
+        x: this.getColumnOuterWidth() * this.dataProvider.columns.count,
+        y: this.getColumnOuterHeight() * this.dataProvider.rows.length,
+      };
     }
 
     private onMouseWheel(e:WheelEvent) {
@@ -355,6 +371,7 @@ class InfiniteGrid {
       }
 
       this.renderColumnHeaders(startColIndex, endColIndex);
+      this.scrollbars.draw(this.viewportOffset);
 
       this.debug && console.debug(JSON.stringify(this.debugInfo));
     }
@@ -467,4 +484,4 @@ class InfiniteGrid {
         }
 }
 
-export {InfiniteGrid}
+export {InfiniteGrid, Dimensions}
