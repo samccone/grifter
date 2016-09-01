@@ -32,9 +32,9 @@ function generateRows(
       count: number
     }
   } = {
-    rows: generateRows(10, 50),
+    rows: generateRows(1000, 1000),
     columns: {
-      count: 50
+      count: 1000
     }
   };
 
