@@ -289,7 +289,7 @@ class InfiniteGrid {
     }
 
     renderColumnHeaders(startRowIndex:number, endRowIndex:number) {
-      this.ctx.fillStyle = 'black';
+      this.ctx.fillStyle = 'hsl(232, 54%, 41%)';
       this.ctx.fillRect(
         this.s(this.dimensions.rowGuideWidth),
         0,
@@ -300,7 +300,7 @@ class InfiniteGrid {
         this.drawColumnHeader(i);
       }
 
-      this.ctx.fillStyle = 'white';
+      this.ctx.fillStyle = 'hsl(0, 0%, 26%)';
       this.ctx.fillRect(
         0,
         0,
@@ -325,12 +325,19 @@ class InfiniteGrid {
         this.debugInfo.drawnRowGuides++;
       }
 
-      this.ctx.fillStyle = 'teal';
+      this.ctx.fillStyle = 'hsl(231, 48%, 48%)';
       this.ctx.fillRect(
         0,
         topY - this.viewportOffset.y,
         this.s(this.dimensions.rowGuideWidth),
         this.s(this.dimensions.cellHeight));
+
+      this.ctx.fillStyle = 'hsl(187, 72%, 93%)';
+      this.drawText(
+          this.s(20),
+          this.s(10),
+          topY - this.viewportOffset.y + this.s(50),
+          `row ${rowIndex}`)
     }
 
     render() {
@@ -437,19 +444,19 @@ class InfiniteGrid {
 
         this.debug && this.debugInfo.drawnColumnHeaders++;
 
-        this.ctx.fillStyle = 'orange';
+        this.ctx.fillStyle = 'hsl(235, 66%, 30%)';
         this.ctx.fillRect(
           leftX - this.viewportOffset.x,
           topY,
           innerWidth,
           innerHeight);
 
-        this.ctx.fillStyle = 'black';
+        this.ctx.fillStyle = 'white';
         this.drawText(
           this.s(12),
           leftX - this.viewportOffset.x,
           topY + innerHeight / 2,
-          String(columnIndex) + ' - column')
+          `column ${columnIndex}`)
       }
 
       private getColumnOuterWidth() {
@@ -487,8 +494,10 @@ class InfiniteGrid {
             return;
           }
 
-          this.ctx.font = `${fontSize}px Roboto`
-          this.ctx.fillText(text, x, y);
+          const padding = this.s(5);
+
+          this.ctx.font = `bold ${fontSize}px Roboto`
+          this.ctx.fillText(text, x + padding, y + padding);
         }
 }
 

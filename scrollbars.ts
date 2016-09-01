@@ -16,8 +16,13 @@ class Scrollbars {
 
   draw() {
     var maxBounds = this.grid.getMaxBounds();
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, 30, this.grid.dimensions.height);
+    this.ctx.fillStyle = 'hsl(0, 0%, 86%)';
+    this.ctx.fillRect(
+        this.grid.dimensions.width - 30,
+        0,
+        this.grid.dimensions.width,
+        this.grid.dimensions.height);
+
     this.ctx.fillRect(
       0,
       this.grid.dimensions.height - 30,
@@ -30,8 +35,8 @@ class Scrollbars {
     let xScrollPercent = this.grid.viewportOffset.x /
       (maxBounds.x - this.grid.dimensions.width);
 
-    this.ctx.fillStyle = 'yellow';
-    this.ctx.fillRect(10,
+    this.ctx.fillStyle = 'hsl(0, 0%, 61%)';
+    this.ctx.fillRect(this.grid.dimensions.width - 30 + 10,
                       yScrollPercent * this.grid.dimensions.height,
                       10,
                       50);
