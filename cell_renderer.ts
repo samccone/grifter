@@ -86,7 +86,7 @@ class CellRenderer {
         this.grid.drawText(
           this.grid.s(12),
           0,
-          innerHeight / 2,
+          height / 2,
           String(rowIndex) + ' - ' + String(columnIndex))
       }
 }
