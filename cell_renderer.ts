@@ -81,14 +81,15 @@ class CellRenderer {
         this.grid.debug && this.grid.debugInfo.drawnCells++;
 
         this.grid.ctx.fillRect(0, 0, width, height);
-        this.grid.ctx.fillStyle = 'red';
+        this.grid.ctx.fillStyle = 'hsl(0, 0%, 19%)';
 
         this.grid.drawText(
           this.grid.s(12),
           0,
           height / 2,
-          String(rowIndex) + ' - ' + String(columnIndex))
+          String(rowIndex) + ', ' + String(columnIndex))
       }
+
 }
 
 export {CellRenderer}
