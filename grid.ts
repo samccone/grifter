@@ -108,11 +108,8 @@ class InfiniteGrid {
       this.container.appendChild(this.canvas);
       this.setEventListeners();
       this.scrollbars = new Scrollbars(
-        dimensions,
         this.ctx,
-        this,
-        this.viewportOffset
-      );
+        this);
 
       this.renderLoop();
     }
@@ -371,7 +368,7 @@ class InfiniteGrid {
       }
 
       this.renderColumnHeaders(startColIndex, endColIndex);
-      this.scrollbars.draw(this.viewportOffset);
+      this.scrollbars.draw();
 
       this.debug && console.debug(JSON.stringify(this.debugInfo));
     }
