@@ -10,10 +10,15 @@
         canvas {
             display: block;
         }
-
-        #ranger {
+        #rangerbob {
             position: fixed;
-            zoom: 2
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 3px 3px 0;
+            border: 0.5px solid #d0d0d0;
+            transform: scale(2);
+            transform-origin: 100% 100%;
         }
         html {
             overflow: hidden;
@@ -23,11 +28,11 @@
         body {
             height: 100%;
             overflow: auto;
-        }    
+        }
         </style>
         </head>
     <body>
-        <input id="ranger" value="1" type="range" min="0.1" max="5" step="0.1">
+        <span id="rangerbob"><input id="ranger" value="1" type="range" min="0.3" max="5" step="0.05"></span>
         <script src="dist/dist.js"></script>
     </body>
 </html>
