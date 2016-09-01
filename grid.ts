@@ -34,6 +34,7 @@ class InfiniteGrid {
   private oldScalar: number
   private cellRenderer
   private scrollbars: Scrollbars
+  private rafId: number
 
   debug:boolean = false
 
@@ -111,7 +112,7 @@ class InfiniteGrid {
         this.ctx,
         this);
 
-      this.renderLoop();
+      this.tick();
     }
 
     private onKeyPress(e:KeyboardEvent) {
@@ -256,7 +257,20 @@ class InfiniteGrid {
       }
     }
 
+    private tick() {
+      window.setTimeout(this.tick.bind(this), 16.66);
+
+      if (this.rafId != undefined) {
+        return;
+      }
+
+      this.rafId = window.requestAnimationFrame(
+        this.renderLoop.bind(this));
+    }
+
     private renderLoop() {
+      this.rafId = undefined;
+
       if (this.invalidated()) {
         this.calculateMouseOverTargets();
         this.viewportOffset.syncState();
@@ -265,9 +279,6 @@ class InfiniteGrid {
 
         this.render();
       }
-
-      window.requestAnimationFrame(
-        this.renderLoop.bind(this));
     }
 
     private invalidated():boolean {
