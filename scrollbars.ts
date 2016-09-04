@@ -39,11 +39,11 @@ class Scrollbars {
     this.ctx.fillRect(this.grid.dimensions.width - 30 + 10,
                       yScrollPercent * this.grid.dimensions.height,
                       10,
-                      50);
+                      (this.grid.dimensions.height / maxBounds.y) * this.grid.dimensions.height);
 
     this.ctx.fillRect(xScrollPercent * this.grid.dimensions.width,
                       this.grid.dimensions.height - 15,
-                      20,
+                      (this.grid.dimensions.width / maxBounds.x) * this.grid.dimensions.width,
                       5);
   }
 };
