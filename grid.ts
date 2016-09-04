@@ -356,7 +356,10 @@ class InfiniteGrid {
       if (this.debug)
         this.debugInfo.drawnRowGuides = this.debugInfo.drawnCells = this.debugInfo.drawnColumnHeaders = 0;
 
-      const startingPosition = this.getCellFromXY();
+      const startingPosition = this.getCellFromXY(
+        this.s(this.constantOffsets.x),
+        this.s(this.constantOffsets.y));
+
       const endingPosition = this.getCellFromXY(
         this.dimensions.width,
         this.dimensions.height,
