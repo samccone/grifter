@@ -18,6 +18,7 @@ interface Dimensions {
 
 class InfiniteGrid {
   ctx: CanvasRenderingContext2D;
+  constantOffsets: XYPos;
   dimensions: Dimensions;
   debugInfo = {
     drawnColumnHeaders: 0,
@@ -47,6 +48,7 @@ class InfiniteGrid {
       cellRenderer.grid = this;
 
       this.viewportOffset = new XYPos({x: 0, y: 0});
+      this.constantOffsets = new XYPos({x: 0, y: 0});
       this.mouseOverTargets = {col: -1, row: -1};
       this.mouseOverPosition = new XYPos({x: -1, y: -1});
 
@@ -56,6 +58,11 @@ class InfiniteGrid {
       this.container = container;
       this.dataProvider = dataProvider;
       this.dimensions = dimensions;
+
+      this.constantOffsets.x += dimensions.rowGuideWidth;
+      this.constantOffsets.y += dimensions.columnHeaderHeight;
+      this.constantOffsets.syncState();
+
       this.cellRenderer = cellRenderer;
       this.setup(dimensions);
     }
@@ -210,9 +217,9 @@ class InfiniteGrid {
 
       return {
         col: roundFn(
-          (xWithOffset - this.s(this.dimensions.rowGuideWidth)) / this.getColumnOuterWidth()),
+          (xWithOffset - this.s(this.constantOffsets.x)) / this.getColumnOuterWidth()),
           row: roundFn((
-            yWithOffset - this.s(this.dimensions.columnHeaderHeight)) / this.getColumnOuterHeight())
+            yWithOffset - this.s(this.constantOffsets.y)) / this.getColumnOuterHeight())
       }
     }
 
@@ -226,8 +233,10 @@ class InfiniteGrid {
 
     getMaxBounds(): {x: number, y: number} {
       return {
-        x: this.getColumnOuterWidth() * this.dataProvider.columns.count,
-        y: this.getColumnOuterHeight() * this.dataProvider.rows.length,
+        x: (this.s(this.constantOffsets.x) +
+          this.getColumnOuterWidth() * this.dataProvider.columns.count),
+        y: (this.s(this.constantOffsets.y) +
+            this.getColumnOuterHeight() * this.dataProvider.rows.length),
       };
     }
 
@@ -292,7 +301,7 @@ class InfiniteGrid {
     renderColumnHeaders(startRowIndex:number, endRowIndex:number) {
       this.ctx.fillStyle = 'hsl(232, 54%, 41%)';
       this.ctx.fillRect(
-        this.s(this.dimensions.rowGuideWidth),
+        this.s(this.constantOffsets.x),
         0,
         this.dimensions.width,
         this.s(this.dimensions.columnHeaderHeight));
@@ -427,7 +436,7 @@ class InfiniteGrid {
       }
 
       private drawColumnHeader(columnIndex:number) {
-        let leftX = this.s(this.dimensions.rowGuideWidth) +
+        let leftX = this.s(this.constantOffsets.x) +
           this.s(((1 + columnIndex) * this.dimensions.cellMargin) +
                  columnIndex * this.dimensions.cellWidth);
 
