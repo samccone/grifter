@@ -17,15 +17,16 @@ interface Dimensions {
 };
 
 class InfiniteGrid {
-  ctx: CanvasRenderingContext2D;
-  constantOffsets: XYPos;
-  dimensions: Dimensions;
+  ctx: CanvasRenderingContext2D
+  constantOffsets: XYPos
+  dimensions: Dimensions
   debugInfo = {
     drawnColumnHeaders: 0,
     drawnCells: 0,
     drawnRowGuides: 0,
   };
-  viewportOffset: XYPos;
+  viewportOffset: XYPos
+  debug: boolean
   private container: HTMLElement
   private canvas: HTMLCanvasElement
   private dataProvider: any
@@ -36,8 +37,6 @@ class InfiniteGrid {
   private cellRenderer
   private scrollbars: Scrollbars
   private rafId: number
-
-  debug:boolean = false
 
   constructor(
     container: HTMLElement,
@@ -218,8 +217,8 @@ class InfiniteGrid {
       return {
         col: roundFn(
           (xWithOffset - this.s(this.constantOffsets.x)) / this.getColumnOuterWidth()),
-          row: roundFn((
-            yWithOffset - this.s(this.constantOffsets.y)) / this.getColumnOuterHeight())
+        row: roundFn((
+          yWithOffset - this.s(this.constantOffsets.y)) / this.getColumnOuterHeight())
       }
     }
 
