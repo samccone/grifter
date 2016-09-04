@@ -1,9 +1,14 @@
-import {XYPos} from './xypos'
-import {Dimensions, InfiniteGrid} from './grid';
+import {InfiniteGrid} from './grid';
 
 class Scrollbars {
   ctx: CanvasRenderingContext2D
   grid: InfiniteGrid
+
+  scrollbarColor='hsl(0, 0%, 61%)'
+  scrollbarBackground='hsl(0, 0%, 86%)'
+  scrollButtColor ='hsl(0, 0%, 76%)'
+  scrollButtSize = 30
+  scrollHandleSize = 12
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -14,37 +19,71 @@ class Scrollbars {
     this.grid = grid;
   }
 
-  draw() {
-    var maxBounds = this.grid.getMaxBounds();
-    this.ctx.fillStyle = 'hsl(0, 0%, 86%)';
-    this.ctx.fillRect(
-        this.grid.dimensions.width - 30,
-        0,
-        this.grid.dimensions.width,
-        this.grid.dimensions.height);
-
+  private drawX(maxBounds:{x: number, y: number}) {
+    this.ctx.fillStyle = this.scrollbarBackground;
     this.ctx.fillRect(
       0,
-      this.grid.dimensions.height - 30,
-      this.grid.dimensions.width,
-      this.grid.dimensions.height - 30);
+      this.grid.dimensions.height - this.scrollButtSize,
+      this.grid.dimensions.width - this.scrollButtSize,
+      this.grid.dimensions.height - this.scrollButtSize);
 
-    let yScrollPercent = this.grid.viewportOffset.y /
-      (maxBounds.y - this.grid.dimensions.height);
+    let width = (this.grid.dimensions.width / maxBounds.x) * this.grid.dimensions.width;
 
-    let xScrollPercent = this.grid.viewportOffset.x /
-      (maxBounds.x - this.grid.dimensions.width);
+    let xScrollPercent = this.grid.viewportOffset.x / (maxBounds.x - this.grid.dimensions.width);
 
-    this.ctx.fillStyle = 'hsl(0, 0%, 61%)';
-    this.ctx.fillRect(this.grid.dimensions.width - 30 + 10,
-                      yScrollPercent * this.grid.dimensions.height,
-                      10,
-                      (this.grid.dimensions.height / maxBounds.y) * this.grid.dimensions.height);
+    this.ctx.fillStyle = this.scrollbarColor;
 
-    this.ctx.fillRect(xScrollPercent * this.grid.dimensions.width,
-                      this.grid.dimensions.height - 15,
-                      (this.grid.dimensions.width / maxBounds.x) * this.grid.dimensions.width,
-                      5);
+    this.ctx.fillRect(
+      xScrollPercent * (this.grid.dimensions.width - width),
+      this.grid.dimensions.height - this.scrollButtSize + this.scrollButtSize / 2 - this.scrollHandleSize / 2,
+      width - this.scrollButtSize,
+      this.scrollHandleSize);
+  }
+
+  private drawY(maxBounds:{x: number, y: number}) {
+    this.ctx.fillStyle = this.scrollbarBackground;
+
+    this.ctx.fillRect(
+        this.grid.dimensions.width - this.scrollButtSize,
+        0,
+        this.grid.dimensions.width - this.scrollButtSize,
+        this.grid.dimensions.height - this.scrollButtSize);
+
+    let height = (this.grid.dimensions.height / maxBounds.y) * this.grid.dimensions.height;
+
+    let yScrollPercent = this.grid.viewportOffset.y / (maxBounds.y - this.grid.dimensions.height);
+
+    this.ctx.fillStyle = this.scrollbarColor;
+
+    this.ctx.fillRect(
+      this.grid.dimensions.width - this.scrollButtSize + this.scrollButtSize / 2 - this.scrollHandleSize / 2,
+      yScrollPercent * (this.grid.dimensions.height - height),
+      this.scrollHandleSize,
+      height - this.scrollButtSize);
+  }
+
+  private drawScrollButt() {
+    this.ctx.fillStyle = this.scrollButtColor;
+    this.ctx.fillRect(
+        this.grid.dimensions.width - this.scrollButtSize,
+        this.grid.dimensions.height - this.scrollButtSize,
+        this.scrollButtSize,
+        this.scrollButtSize);
+  }
+
+
+  draw() {
+    var maxBounds = this.grid.getMaxBounds();
+
+    if (maxBounds.x > this.grid.dimensions.width) {
+      this.drawX(maxBounds);
+    }
+
+    if (maxBounds.y > this.grid.dimensions.height) {
+      this.drawY(maxBounds);
+    }
+
+    this.drawScrollButt();
   }
 };
 
