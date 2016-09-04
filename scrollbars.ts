@@ -9,6 +9,7 @@ class Scrollbars {
   scrollButtColor ='hsl(0, 0%, 76%)'
   scrollButtSize = 30
   scrollHandleSize = 12
+  scrollHandleMinLength = 90
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -27,7 +28,9 @@ class Scrollbars {
       this.grid.dimensions.width - this.scrollButtSize,
       this.grid.dimensions.height - this.scrollButtSize);
 
-    let width = (this.grid.dimensions.width / maxBounds.x) * this.grid.dimensions.width;
+    let width = Math.max(
+      this.scrollHandleMinLength,
+      (this.grid.dimensions.width / maxBounds.x) * this.grid.dimensions.width);
 
     let xScrollPercent = this.grid.viewportOffset.x / (maxBounds.x - this.grid.dimensions.width);
 
@@ -49,7 +52,9 @@ class Scrollbars {
         this.grid.dimensions.width - this.scrollButtSize,
         this.grid.dimensions.height - this.scrollButtSize);
 
-    let height = (this.grid.dimensions.height / maxBounds.y) * this.grid.dimensions.height;
+    let height = Math.max(
+      this.scrollHandleMinLength,
+      (this.grid.dimensions.height / maxBounds.y) * this.grid.dimensions.height);
 
     let yScrollPercent = this.grid.viewportOffset.y / (maxBounds.y - this.grid.dimensions.height);
 
