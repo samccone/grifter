@@ -69,6 +69,8 @@ class CellRenderer {
     }
 
     drawCell(
+      topOffset:number,
+      leftOffset: number,
       rowIndex:number,
       columnIndex:number,
       cell:any) {
@@ -80,13 +82,13 @@ class CellRenderer {
         let height = this.grid.s(this.grid.dimensions.cellHeight)
         this.grid.debug && this.grid.debugInfo.drawnCells++;
 
-        this.grid.ctx.fillRect(0, 0, width, height);
+        this.grid.ctx.fillRect(leftOffset, topOffset, width, height);
         this.grid.ctx.fillStyle = 'hsl(0, 0%, 19%)';
 
         this.grid.drawText(
           this.grid.s(12),
-          0,
-          height / 2,
+          leftOffset,
+          topOffset + height / 2,
           String(rowIndex) + ', ' + String(columnIndex))
       }
 
