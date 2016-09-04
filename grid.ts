@@ -119,7 +119,7 @@ class InfiniteGrid {
         this.ctx,
         this);
 
-      this.tick();
+      window.setInterval(this.tick.bind(this), 16.66);
     }
 
     private onKeyPress(e:KeyboardEvent) {
@@ -267,8 +267,6 @@ class InfiniteGrid {
     }
 
     private tick() {
-      window.setTimeout(this.tick.bind(this), 16.66);
-
       if (this.rafId != undefined) {
         return;
       }
