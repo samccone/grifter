@@ -84,9 +84,10 @@ class InfiniteGrid {
     }
 
     private setEventListeners() {
-      this.canvas.addEventListener(
+      (this.canvas.addEventListener as any)(
         'wheel',
-        this.onMouseWheel.bind(this))
+        this.onMouseWheel.bind(this),
+        {passive: true})
 
       this.canvas.addEventListener(
         'mousemove',
