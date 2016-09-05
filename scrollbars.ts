@@ -1,9 +1,5 @@
 import {InfiniteGrid} from './grid';
 
-class Scrollbars {
-  ctx: CanvasRenderingContext2D
-  grid: InfiniteGrid
-
   scrollbarColor='hsl(0, 0%, 61%)'
   scrollbarBackground='hsl(0, 0%, 86%)'
   scrollButtColor ='hsl(0, 0%, 76%)'
@@ -12,9 +8,9 @@ class Scrollbars {
   scrollHandleMinLength = 90
 
   constructor(
-    ctx: CanvasRenderingContext2D,
-    grid: InfiniteGrid
-  ) {
+    private ctx: CanvasRenderingContext2D,
+    private grid: InfiniteGrid
+  ) { }
 
     this.ctx = ctx;
     this.grid = grid;
