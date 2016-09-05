@@ -1,5 +1,13 @@
 import {InfiniteGrid} from './grid';
 
+interface Rect {
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number
+}
+
+class Scrollbars {
   scrollbarColor='hsl(0, 0%, 61%)'
   scrollbarBackground='hsl(0, 0%, 86%)'
   scrollButtColor ='hsl(0, 0%, 76%)'
@@ -12,17 +20,42 @@ import {InfiniteGrid} from './grid';
     private grid: InfiniteGrid
   ) { }
 
-    this.ctx = ctx;
-    this.grid = grid;
+  private getXBarRect():Rect {
+    let ret = {
+      startX: 0,
+      startY: this.grid.dimensions.height - this.scrollButtSize,
+    };
+
+    (ret as Rect).endX = (ret.startX + this.grid.dimensions.width -
+                          this.scrollButtSize);
+    (ret as Rect).endY = (ret.startY + this.grid.dimensions.height -
+                          this.scrollButtSize);
+
+    return (ret as Rect);
+  }
+
+  private getYBarRect():Rect {
+    let ret = {
+      startX: this.grid.dimensions.width - this.scrollButtSize,
+      startY: 0
+    };
+
+    (ret as Rect).endX = (ret.startX + this.grid.dimensions.width -
+                          this.scrollButtSize);
+    (ret as Rect).endY = (ret.startY + this.grid.dimensions.height -
+                          this.scrollButtSize);
+
+    return (ret as Rect)
   }
 
   private drawX(maxBounds:{x: number, y: number}) {
+    let bounds = this.getXBarRect();
     this.ctx.fillStyle = this.scrollbarBackground;
     this.ctx.fillRect(
-      0,
-      this.grid.dimensions.height - this.scrollButtSize,
-      this.grid.dimensions.width - this.scrollButtSize,
-      this.grid.dimensions.height - this.scrollButtSize);
+      bounds.startX,
+      bounds.startY,
+      bounds.endX - bounds.startX,
+      bounds.endY - bounds.startY);
 
     let width = Math.max(
       this.scrollHandleMinLength,
@@ -40,13 +73,13 @@ import {InfiniteGrid} from './grid';
   }
 
   private drawY(maxBounds:{x: number, y: number}) {
+    let bounds = this.getYBarRect();
     this.ctx.fillStyle = this.scrollbarBackground;
-
     this.ctx.fillRect(
-        this.grid.dimensions.width - this.scrollButtSize,
-        0,
-        this.grid.dimensions.width - this.scrollButtSize,
-        this.grid.dimensions.height - this.scrollButtSize);
+      bounds.startX,
+      bounds.startY,
+      bounds.endX - bounds.startX,
+      bounds.endY - bounds.startY);
 
     let height = Math.max(
       this.scrollHandleMinLength,
