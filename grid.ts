@@ -187,6 +187,11 @@ class InfiniteGrid {
       const x = e.layerX * window.devicePixelRatio;
       const y = e.layerY * window.devicePixelRatio;
 
+      if (this.scrollbars.isOver(x, y)) {
+        this.scrollbars.handleClick(x, y);
+        return
+      }
+
       if (this.isOverRowGuide(x, y)) {
         return
       }
@@ -290,7 +295,7 @@ class InfiniteGrid {
 
     private invalidated():boolean {
       return (
-        this.viewportOffset.invalidated() ||
+          this.viewportOffset.invalidated() ||
           this.mouseOverPosition.invalidated() ||
           this.scalar !== this.oldScalar);
     }

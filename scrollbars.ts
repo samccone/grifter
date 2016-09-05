@@ -40,8 +40,7 @@ class Scrollbars {
       startY: 0
     };
 
-    (ret as Rect).endX = (ret.startX + this.grid.dimensions.width -
-                          this.scrollButtSize);
+    (ret as Rect).endX = (ret.startX + this.scrollButtSize);
     (ret as Rect).endY = (ret.startY + this.grid.dimensions.height -
                           this.scrollButtSize);
 
@@ -61,13 +60,16 @@ class Scrollbars {
       this.scrollHandleMinLength,
       (this.grid.dimensions.width / maxBounds.x) * this.grid.dimensions.width);
 
-    let xScrollPercent = this.grid.viewportOffset.x / (maxBounds.x - this.grid.dimensions.width);
+    let xScrollPercent = (this.grid.viewportOffset.x /
+                          (maxBounds.x - this.grid.dimensions.width));
 
     this.ctx.fillStyle = this.scrollbarColor;
 
     this.ctx.fillRect(
       xScrollPercent * (this.grid.dimensions.width - width),
-      this.grid.dimensions.height - this.scrollButtSize + this.scrollButtSize / 2 - this.scrollHandleSize / 2,
+      (this.grid.dimensions.height -
+       this.scrollButtSize + this.scrollButtSize / 2 -
+       this.scrollHandleSize / 2),
       width - this.scrollButtSize,
       this.scrollHandleSize);
   }
@@ -83,14 +85,18 @@ class Scrollbars {
 
     let height = Math.max(
       this.scrollHandleMinLength,
-      (this.grid.dimensions.height / maxBounds.y) * this.grid.dimensions.height);
+      (this.grid.dimensions.height
+       / maxBounds.y) * this.grid.dimensions.height);
 
-    let yScrollPercent = this.grid.viewportOffset.y / (maxBounds.y - this.grid.dimensions.height);
+    let yScrollPercent = (this.grid.viewportOffset.y /
+                          (maxBounds.y - this.grid.dimensions.height));
 
     this.ctx.fillStyle = this.scrollbarColor;
 
     this.ctx.fillRect(
-      this.grid.dimensions.width - this.scrollButtSize + this.scrollButtSize / 2 - this.scrollHandleSize / 2,
+      (this.grid.dimensions.width -
+       this.scrollButtSize + this.scrollButtSize / 2 -
+       this.scrollHandleSize / 2),
       yScrollPercent * (this.grid.dimensions.height - height),
       this.scrollHandleSize,
       height - this.scrollButtSize);
@@ -105,6 +111,20 @@ class Scrollbars {
         this.scrollButtSize);
   }
 
+  private isPointInRect(x:number, y:number, rect:Rect):Boolean {
+    return (x >= rect.startX && x <= rect.endX) &&
+      (y >= rect.startY && y <= rect.endY);
+  }
+
+  private handleXClick(x: number) {
+    this.grid.viewportOffset.x = this.grid.getMaxBounds().x * (
+      x / this.grid.dimensions.width);
+  }
+
+  private handleYClick(y: number) {
+    this.grid.viewportOffset.y = this.grid.getMaxBounds().y * (
+      y / this.grid.dimensions.height);
+  }
 
   draw() {
     var maxBounds = this.grid.getMaxBounds();
@@ -119,7 +139,21 @@ class Scrollbars {
 
     this.drawScrollButt();
   }
-};
 
+  isOver(x:number, y:number):Boolean {
+    return this.isPointInRect(x, y, this.getYBarRect()) ||
+      this.isPointInRect(x, y, this.getXBarRect());
+  }
+
+  handleClick(x:number, y:number) {
+    if (this.isPointInRect(x, y, this.getYBarRect())) {
+      this.handleYClick(y);
+    }
+
+    if (this.isPointInRect(x, y, this.getXBarRect())) {
+      this.handleXClick(x);
+    }
+  }
+};
 
 export {Scrollbars}
