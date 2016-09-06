@@ -246,28 +246,36 @@ class InfiniteGrid {
 
     private onMouseWheel(e:WheelEvent) {
       let {deltaY, deltaX} = e;
+      let dirty = {x: false, y: false};
 
-      let boundingCell = this.getCellFromXY(
-        this.dimensions.width + deltaX,
-        this.dimensions.height + deltaY, Math.ceil);
+      let maxBounds = this.getMaxBounds();
 
-      if (deltaX > 0 && boundingCell.col > this.dataProvider.columns.count) {
-        deltaX = 0;
-      }
-
-      if (deltaY > 0 && boundingCell.row > this.dataProvider.rows.length) {
-        deltaY = 0;
-      }
-
-      this.viewportOffset.x += deltaX;
-      this.viewportOffset.y += deltaY;
-
-      if (this.viewportOffset.x < 0) {
+      if (this.viewportOffset.x + deltaX < 0) {
         this.viewportOffset.x = 0;
+        dirty.x = true;
       }
 
-      if (this.viewportOffset.y < 0) {
+      if (this.viewportOffset.y + deltaY < 0) {
         this.viewportOffset.y = 0;
+        dirty.y = true;
+      }
+
+      if (this.viewportOffset.x + deltaX + this.dimensions.width > maxBounds.x) {
+        this.viewportOffset.x = maxBounds.x - this.dimensions.width;
+        dirty.x = true;
+      }
+
+      if (this.viewportOffset.y + deltaY + this.dimensions.height > maxBounds.y) {
+        this.viewportOffset.y = maxBounds.y - this.dimensions.height;
+        dirty.y = true;
+      }
+
+      if (!dirty.x) {
+        this.viewportOffset.x += deltaX;
+      }
+
+      if (!dirty.y) {
+        this.viewportOffset.y += deltaY;
       }
     }
 
