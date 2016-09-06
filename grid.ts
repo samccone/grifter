@@ -312,7 +312,7 @@ class InfiniteGrid {
         this.drawColumnHeader(i);
       }
 
-      this.ctx.fillStyle = 'hsl(0, 0%, 26%)';
+      this.ctx.fillStyle = 'hsl(0, 0%, 76%)';
       this.ctx.fillRect(
         0,
         0,
