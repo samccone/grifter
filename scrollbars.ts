@@ -131,15 +131,17 @@ class Scrollbars {
   draw() {
     var maxBounds = this.grid.getMaxBounds();
 
-    if (maxBounds.x > this.grid.dimensions.width) {
+    if (this.isXBarVisible(maxBounds)) {
       this.drawX(maxBounds);
     }
 
-    if (maxBounds.y > this.grid.dimensions.height) {
+    if (this.isYBarVisible(maxBounds)) {
       this.drawY(maxBounds);
     }
 
-    this.drawScrollButt();
+    if (this.isXBarVisible(maxBounds) || this.isYBarVisible(maxBounds)) {
+      this.drawScrollButt();
+    }
   }
 
   isOver(x:number, y:number):Boolean {
@@ -155,6 +157,14 @@ class Scrollbars {
     if (this.isPointInRect(x, y, this.getXBarRect())) {
       this.handleXClick(x);
     }
+  }
+
+  isXBarVisible(maxBounds): Boolean {
+    return maxBounds.x > this.grid.dimensions.width;
+  }
+
+  isYBarVisible(maxBounds): Boolean {
+    return maxBounds.y > this.grid.dimensions.height;
   }
 };
 
