@@ -236,19 +236,30 @@ class InfiniteGrid {
     }
 
     getMaxBounds(): {x: number, y: number} {
-      return {
+      let ret = {
         x: (this.s(this.constantOffsets.x) +
           this.getColumnOuterWidth() * this.dataProvider.columns.count),
         y: (this.s(this.constantOffsets.y) +
             this.getColumnOuterHeight() * this.dataProvider.rows.length),
       };
+
+      if (this.scrollbars.isXBarVisible(ret)) {
+        ret.x += this.scrollbars.scrollButtSize;
+      }
+
+      if (this.scrollbars.isYBarVisible(ret)) {
+        ret.y += this.scrollbars.scrollButtSize;
+      }
+
+      return ret;
     }
 
     private onMouseWheel(e:WheelEvent) {
       let {deltaY, deltaX} = e;
       let dirty = {x: false, y: false};
-
       let maxBounds = this.getMaxBounds();
+      let xScrollable = this.scrollbars.isXBarVisible(maxBounds);
+      let yScrollable = this.scrollbars.isYBarVisible(maxBounds);
 
       if (this.viewportOffset.x + deltaX < 0) {
         this.viewportOffset.x = 0;
@@ -260,21 +271,21 @@ class InfiniteGrid {
         dirty.y = true;
       }
 
-      if (this.viewportOffset.x + deltaX + this.dimensions.width > maxBounds.x) {
+      if (xScrollable && this.viewportOffset.x + deltaX + this.dimensions.width > maxBounds.x) {
         this.viewportOffset.x = maxBounds.x - this.dimensions.width;
         dirty.x = true;
       }
 
-      if (this.viewportOffset.y + deltaY + this.dimensions.height > maxBounds.y) {
+      if (yScrollable && this.viewportOffset.y + deltaY + this.dimensions.height > maxBounds.y) {
         this.viewportOffset.y = maxBounds.y - this.dimensions.height;
         dirty.y = true;
       }
 
-      if (!dirty.x) {
+      if (!dirty.x && xScrollable) {
         this.viewportOffset.x += deltaX;
       }
 
-      if (!dirty.y) {
+      if (!dirty.y && yScrollable) {
         this.viewportOffset.y += deltaY;
       }
     }
