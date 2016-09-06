@@ -8,9 +8,9 @@ interface Rect {
 }
 
 class Scrollbars {
-  scrollbarColor='hsl(0, 0%, 61%)'
-  scrollbarBackground='hsl(0, 0%, 86%)'
-  scrollButtColor ='hsl(0, 0%, 76%)'
+  scrollbarColor = 'hsl(0, 0%, 61%)'
+  scrollbarBackground = 'hsl(0, 0%, 86%)'
+  scrollButtColor = 'hsl(0, 0%, 76%)'
   scrollButtSize = 30
   scrollHandleSize = 12
   scrollHandleMinLength = 90
@@ -144,7 +144,7 @@ class Scrollbars {
     }
   }
 
-  isOver(x:number, y:number):Boolean {
+  isOver(x:number, y:number): Boolean {
     return this.isPointInRect(x, y, this.getYBarRect()) ||
       this.isPointInRect(x, y, this.getXBarRect());
   }
