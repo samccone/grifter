@@ -117,12 +117,14 @@ class Scrollbars {
   }
 
   private handleXClick(x: number) {
-    this.grid.viewportOffset.x = this.grid.getMaxBounds().x * (
-      x / this.grid.dimensions.width);
+    this.grid.viewportOffset.x = (this.grid.getMaxBounds().x -
+                                  this.grid.dimensions.width) * (
+    x / this.grid.dimensions.width);
   }
 
   private handleYClick(y: number) {
-    this.grid.viewportOffset.y = this.grid.getMaxBounds().y * (
+    this.grid.viewportOffset.y = (this.grid.getMaxBounds().y -
+                                  this.grid.dimensions.height) * (
       y / this.grid.dimensions.height);
   }
 
