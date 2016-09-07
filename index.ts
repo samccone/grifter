@@ -24,44 +24,44 @@ function generateRows(
     }
 
     return rows;
+}
+
+var dataProvider:{
+  rows: Array<{columns: any[]}>;
+  columns: {
+    count: number
   }
+} = {
+  rows: generateRows(1000, 1000),
+  columns: {
+    count: 1000
+  }
+};
 
-  var dataProvider:{
-    rows: Array<{columns: any[]}>;
-    columns: {
-      count: number
-    }
-  } = {
-    rows: generateRows(1000, 1000),
-    columns: {
-      count: 1000
-    }
-  };
+var cellRenderer = new CellRenderer()
 
-  var cellRenderer = new CellRenderer()
+var grid = new InfiniteGrid(
+  document.body,
+  dimensions,
+  dataProvider,
+  cellRenderer);
 
-  var grid = new InfiniteGrid(
-    document.body,
-    dimensions,
-    dataProvider,
-    cellRenderer);
+grid.debug = false;
+grid.render();
 
-    grid.debug = false;
-    grid.render();
+document.querySelector('#ranger').addEventListener('input', (e:UIEvent) => {
+  let target = <HTMLInputElement>e.target;
+  grid.updateScalar(parseFloat(target.value))
+});
 
-    document.querySelector('#ranger').addEventListener('input', function(e:UIEvent) {
-      let target = <HTMLInputElement>e.target;
-      grid.updateScalar(parseFloat(target.value))
-    });
-
-    window.addEventListener('resize', function() {
-      grid.updateDimensions({
-        height: window.innerHeight * window.devicePixelRatio,
-        width: window.innerWidth * window.devicePixelRatio,
-        columnHeaderHeight: 30 * window.devicePixelRatio,
-        cellHeight: 100 * window.devicePixelRatio,
-        cellWidth: 100 * window.devicePixelRatio,
-        cellMargin: 5 * window.devicePixelRatio,
-        rowGuideWidth: 150 * window.devicePixelRatio,
-      });
-    });
+window.addEventListener('resize', function() {
+  grid.updateDimensions({
+    height: window.innerHeight * window.devicePixelRatio,
+    width: window.innerWidth * window.devicePixelRatio,
+    columnHeaderHeight: 30 * window.devicePixelRatio,
+    cellHeight: 100 * window.devicePixelRatio,
+    cellWidth: 100 * window.devicePixelRatio,
+    cellMargin: 5 * window.devicePixelRatio,
+    rowGuideWidth: 150 * window.devicePixelRatio,
+  });
+});
