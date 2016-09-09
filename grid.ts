@@ -1,3 +1,4 @@
+import {MouseState} from './mousestate'
 import {XYPos} from './xypos'
 import {Scrollbars} from './scrollbars'
 
@@ -27,7 +28,7 @@ class InfiniteGrid {
   };
   viewportOffset: XYPos
   debug: boolean
-  mouseDown: boolean = false
+  mouseState: MouseState
   private container: HTMLElement
   private canvas: HTMLCanvasElement
   private dataProvider: any
@@ -51,6 +52,7 @@ class InfiniteGrid {
       this.constantOffsets = new XYPos({x: 0, y: 0});
       this.mouseOverTargets = {col: -1, row: -1};
       this.mouseOverPosition = new XYPos({x: -1, y: -1});
+      this.mouseState = new MouseState({mouseDown: false, mouseOver: false});
 
       this.scalar = 1;
       this.oldScalar = 1;
@@ -106,8 +108,12 @@ class InfiniteGrid {
         this.onMouseDown.bind(this));
 
       this.canvas.addEventListener(
+        'mouseenter',
+        this.onMouseEnter.bind(this));
+
+      this.canvas.addEventListener(
         'mouseleave',
-        this.onMouseUp.bind(this));
+        this.onMouseLeave.bind(this));
 
       this.canvas.addEventListener(
         'mouseup',
@@ -136,12 +142,21 @@ class InfiniteGrid {
       window.setInterval(this.tick.bind(this), 16.66);
     }
 
+    private onMouseEnter(e:MouseEvent) {
+      this.mouseState.mouseOver = true;
+    }
+
+    private onMouseLeave(e:MouseEvent) {
+      this.mouseState.mouseOver = false;
+      this.mouseState.mouseDown = false;
+    }
+
     private onMouseDown(e:MouseEvent) {
-      this.mouseDown = true;
+      this.mouseState.mouseDown = true;
     }
 
     private onMouseUp(e:MouseEvent) {
-      this.mouseDown = false;
+      this.mouseState.mouseDown = false;
     }
 
     private onKeyPress(e:KeyboardEvent) {
@@ -265,7 +280,7 @@ class InfiniteGrid {
       this.mouseOverPosition.x = x;
       this.mouseOverPosition.y = y;
 
-      if (this.mouseDown && this.scrollbars.isOver(x, y)) {
+      if (this.mouseState.mouseDown && this.scrollbars.isOver(x, y)) {
         this.scrollbars.handleClick(x, y);
         return
       }
@@ -333,13 +348,14 @@ class InfiniteGrid {
         this.calculateMouseOverTargets();
         this.viewportOffset.syncState();
         this.mouseOverPosition.syncState();
+        this.mouseState.syncState();
         this.oldScalar = this.scalar;
         this.render();
       }
     }
 
     private invalidated():boolean {
-      return (
+      return (this.mouseState.invalidated() ||
           this.viewportOffset.invalidated() ||
           this.mouseOverPosition.invalidated() ||
           this.scalar !== this.oldScalar);
@@ -525,11 +541,11 @@ class InfiniteGrid {
       }
 
       isRowHovered(row:number):boolean {
-        return this.mouseOverTargets.row === row;
+        return this.mouseState.mouseOver && this.mouseOverTargets.row === row;
       }
 
       isColumnHovered(col:number):boolean {
-        return this.mouseOverTargets.col === col;
+        return this.mouseState.mouseOver && this.mouseOverTargets.col === col;
       }
 
       isHovered(row:number, col:number):boolean {
