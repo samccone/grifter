@@ -171,29 +171,54 @@ class InfiniteGrid {
     }
 
     private scrollDown(by:number=1) {
-      this.viewportOffset.y += (by * this.getColumnOuterHeight());
+      this.scrollByPixels(0, (by * this.getColumnOuterHeight()));
+    }
+
+    private scrollByPixels(x: number, y:number) {
+      let maxBounds = this.getMaxBounds();
+      let xScrollable = this.scrollbars.isXBarVisible(maxBounds);
+      let yScrollable = this.scrollbars.isYBarVisible(maxBounds);
+
+      let nextXEdge = this.viewportOffset.x + x + this.dimensions.width
+      let nextYEdge = this.viewportOffset.y + y + this.dimensions.height
+      let nextYOffset = this.viewportOffset.y + y;
+      let nextXOffset = this.viewportOffset.x + x;
+
+      if (xScrollable && nextXEdge <= maxBounds.x && nextYOffset >= 0) {
+        this.viewportOffset.x += x;
+      }
+
+      if (xScrollable && nextXEdge > maxBounds.x) {
+        this.viewportOffset.x = maxBounds.x - this.dimensions.width;
+      }
+
+      if (yScrollable && nextYEdge <= maxBounds.y && nextYOffset >= 0) {
+        this.viewportOffset.y += y;
+      }
+
+      if (yScrollable && nextYEdge > maxBounds.y) {
+        this.viewportOffset.y = maxBounds.y - this.dimensions.height;
+      }
+
+      if (nextYOffset < 0) {
+        this.viewportOffset.y = 0;
+      }
+
+      if (nextXOffset < 0) {
+        this.viewportOffset.x = 0;
+      }
     }
 
     private scrollUp() {
-      if (this.viewportOffset.y - this.getColumnOuterHeight() < 0) {
-        this.viewportOffset.y = 0;
-        return;
-      }
-
-      this.viewportOffset.y -= this.getColumnOuterHeight();
+      this.scrollByPixels(0, -this.getColumnOuterHeight());
     }
 
     private scrollLeft() {
-      if (this.viewportOffset.x - this.getColumnOuterHeight() < 0) {
-        this.viewportOffset.x = 0;
-        return;
-      }
-
-      this.viewportOffset.x -= this.getColumnOuterWidth();
+      this.scrollByPixels(-this.getColumnOuterWidth(), 0);
     }
 
     private scrollRight() {
-      this.viewportOffset.x += this.getColumnOuterWidth();
+      this.scrollByPixels(this.getColumnOuterWidth(), 0);
     }
 
     private isOverRowGuide(x: number, y:number):boolean {
@@ -229,8 +254,8 @@ class InfiniteGrid {
     }
 
     private onMouseMove(e:MouseEvent) {
-      let x = e.clientX * window.devicePixelRatio;
-      let y = e.clientY * window.devicePixelRatio;
+      let x = e.layerX * window.devicePixelRatio;
+      let y = e.layerY * window.devicePixelRatio;
 
       this.mouseOverPosition.x = x;
       this.mouseOverPosition.y = y;
@@ -284,39 +309,7 @@ class InfiniteGrid {
     }
 
     private onMouseWheel(e:WheelEvent) {
-      let {deltaY, deltaX} = e;
-      let dirty = {x: false, y: false};
-      let maxBounds = this.getMaxBounds();
-      let xScrollable = this.scrollbars.isXBarVisible(maxBounds);
-      let yScrollable = this.scrollbars.isYBarVisible(maxBounds);
-
-      if (this.viewportOffset.x + deltaX < 0) {
-        this.viewportOffset.x = 0;
-        dirty.x = true;
-      }
-
-      if (this.viewportOffset.y + deltaY < 0) {
-        this.viewportOffset.y = 0;
-        dirty.y = true;
-      }
-
-      if (xScrollable && this.viewportOffset.x + deltaX + this.dimensions.width > maxBounds.x) {
-        this.viewportOffset.x = maxBounds.x - this.dimensions.width;
-        dirty.x = true;
-      }
-
-      if (yScrollable && this.viewportOffset.y + deltaY + this.dimensions.height > maxBounds.y) {
-        this.viewportOffset.y = maxBounds.y - this.dimensions.height;
-        dirty.y = true;
-      }
-
-      if (!dirty.x && xScrollable) {
-        this.viewportOffset.x += deltaX;
-      }
-
-      if (!dirty.y && yScrollable) {
-        this.viewportOffset.y += deltaY;
-      }
+      this.scrollByPixels(e.deltaX, e.deltaY);
     }
 
     private tick() {
