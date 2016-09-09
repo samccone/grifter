@@ -71,23 +71,20 @@ class InfiniteGrid {
       this.scalar = newScalar;
     }
 
-    private setDimensions(dimensions:Dimensions) {
+    setFrameSize(width: number, height:number) {
+      this.dimensions.width = width;
+      this.dimensions.height = height;
+
       this.canvas.setAttribute(
         'width',
-        String(dimensions.width));
+        String(width));
 
       this.canvas.setAttribute(
         'height',
-        String(dimensions.height));
+        String(height));
 
-        this.canvas.style.width = `${dimensions.width / window.devicePixelRatio}px`;
-        this.canvas.style.height = `${dimensions.height / window.devicePixelRatio}px`;
-    }
-
-    updateDimensions(dimensions:Dimensions) {
-      this.setDimensions(dimensions)
-      this.dimensions = dimensions
-      this.render();
+      this.canvas.style.width = `${width / window.devicePixelRatio}px`;
+      this.canvas.style.height = `${height / window.devicePixelRatio}px`;
     }
 
     private setEventListeners() {
@@ -123,7 +120,7 @@ class InfiniteGrid {
 
     private setup(dimensions:Dimensions) {
       this.canvas = document.createElement('canvas');
-      this.setDimensions(dimensions)
+      this.setFrameSize(dimensions.width, dimensions.height);
 
       this.ctx = this.canvas.getContext('2d');
       this.container.appendChild(this.canvas);
@@ -329,7 +326,6 @@ class InfiniteGrid {
         this.viewportOffset.syncState();
         this.mouseOverPosition.syncState();
         this.oldScalar = this.scalar;
-
         this.render();
       }
     }

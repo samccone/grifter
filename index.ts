@@ -55,13 +55,10 @@ document.querySelector('#ranger').addEventListener('input', (e:UIEvent) => {
 });
 
 window.addEventListener('resize', function() {
-  grid.updateDimensions({
-    height: window.innerHeight * window.devicePixelRatio,
-    width: window.innerWidth * window.devicePixelRatio,
-    columnHeaderHeight: 30 * window.devicePixelRatio,
-    cellHeight: 100 * window.devicePixelRatio,
-    cellWidth: 100 * window.devicePixelRatio,
-    cellMargin: 5 * window.devicePixelRatio,
-    rowGuideWidth: 150 * window.devicePixelRatio,
-  });
+  grid.setFrameSize(
+    window.innerWidth * window.devicePixelRatio,
+    window.innerHeight * window.devicePixelRatio
+  );
+
+  grid.render();
 });
