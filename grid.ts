@@ -27,6 +27,7 @@ class InfiniteGrid {
   };
   viewportOffset: XYPos
   debug: boolean
+  mouseDown: boolean = false
   private container: HTMLElement
   private canvas: HTMLCanvasElement
   private dataProvider: any
@@ -100,6 +101,18 @@ class InfiniteGrid {
         this.onMouseMove.bind(this))
 
       this.canvas.addEventListener(
+        'mousedown',
+        this.onMouseDown.bind(this));
+
+      this.canvas.addEventListener(
+        'mouseleave',
+        this.onMouseUp.bind(this));
+
+      this.canvas.addEventListener(
+        'mouseup',
+        this.onMouseUp.bind(this));
+
+      this.canvas.addEventListener(
         'click',
         this.onClick.bind(this));
 
@@ -120,6 +133,14 @@ class InfiniteGrid {
         this);
 
       window.setInterval(this.tick.bind(this), 16.66);
+    }
+
+    private onMouseDown(e:MouseEvent) {
+      this.mouseDown = true;
+    }
+
+    private onMouseUp(e:MouseEvent) {
+      this.mouseDown = false;
     }
 
     private onKeyPress(e:KeyboardEvent) {
@@ -208,8 +229,16 @@ class InfiniteGrid {
     }
 
     private onMouseMove(e:MouseEvent) {
-      this.mouseOverPosition.x = e.clientX * window.devicePixelRatio;
-      this.mouseOverPosition.y = e.clientY * window.devicePixelRatio;
+      let x = e.clientX * window.devicePixelRatio;
+      let y = e.clientY * window.devicePixelRatio;
+
+      this.mouseOverPosition.x = x;
+      this.mouseOverPosition.y = y;
+
+      if (this.mouseDown && this.scrollbars.isOver(x, y)) {
+        this.scrollbars.handleClick(x, y);
+        return
+      }
     }
 
     private getCellFromXY(
