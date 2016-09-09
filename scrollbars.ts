@@ -160,11 +160,13 @@ class Scrollbars {
   }
 
   isXBarVisible(maxBounds): Boolean {
-    return maxBounds.x > this.grid.dimensions.width;
+    return this.grid.viewportOffset.x > 0 ||
+      maxBounds.x > this.grid.dimensions.width;
   }
 
   isYBarVisible(maxBounds): Boolean {
-    return maxBounds.y > this.grid.dimensions.height;
+    return this.grid.viewportOffset.y > 0 ||
+      maxBounds.y > this.grid.dimensions.height;
   }
 };
 
