@@ -85,6 +85,10 @@ class InfiniteGrid {
 
       this.canvas.style.width = `${width / window.devicePixelRatio}px`;
       this.canvas.style.height = `${height / window.devicePixelRatio}px`;
+
+      if (this.viewportOffset.x || this.viewportOffset.y) {
+        this.scrollByPixels(0, 0);
+      }
     }
 
     private setEventListeners() {
@@ -186,7 +190,9 @@ class InfiniteGrid {
       }
 
       if (xScrollable && nextXEdge > maxBounds.x) {
-        this.viewportOffset.x = maxBounds.x - this.dimensions.width;
+        this.viewportOffset.x = Math.max(
+          0,
+          maxBounds.x - this.dimensions.width);
       }
 
       if (yScrollable && nextYEdge <= maxBounds.y && nextYOffset >= 0) {
@@ -194,7 +200,9 @@ class InfiniteGrid {
       }
 
       if (yScrollable && nextYEdge > maxBounds.y) {
-        this.viewportOffset.y = maxBounds.y - this.dimensions.height;
+        this.viewportOffset.y = Math.max(
+          0,
+          maxBounds.y - this.dimensions.height);
       }
 
       if (nextYOffset < 0) {
