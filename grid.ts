@@ -52,7 +52,11 @@ class InfiniteGrid {
       this.constantOffsets = new XYPos({x: 0, y: 0});
       this.mouseOverTargets = {col: -1, row: -1};
       this.mouseOverPosition = new XYPos({x: -1, y: -1});
-      this.mouseState = new MouseState({mouseDown: false, mouseOver: false});
+      this.mouseState = new MouseState({
+        mouseDown: false,
+        mouseOver: false,
+        mouseOffViewport: true
+      });
 
       this.scalar = 1;
       this.oldScalar = 1;
@@ -545,12 +549,16 @@ class InfiniteGrid {
         return this.s(this.dimensions.cellMargin + this.dimensions.cellHeight);
       }
 
+      private mouseOverGridContent():boolean {
+        return this.mouseState.mouseOver && !this.mouseState.mouseOffViewport;
+      }
+
       isRowHovered(row:number):boolean {
-        return this.mouseState.mouseOver && this.mouseOverTargets.row === row;
+        return this.mouseOverGridContent() && this.mouseOverTargets.row === row;
       }
 
       isColumnHovered(col:number):boolean {
-        return this.mouseState.mouseOver && this.mouseOverTargets.col === col;
+        return this.mouseOverGridContent() && this.mouseOverTargets.col === col;
       }
 
       isHovered(row:number, col:number):boolean {
