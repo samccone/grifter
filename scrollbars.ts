@@ -150,11 +150,15 @@ class Scrollbars {
   }
 
   handleClick(x:number, y:number) {
-    if (this.isPointInRect(x, y, this.getYBarRect())) {
+    let maxBounds = this.grid.getMaxBounds();
+
+    if (this.isYBarVisible(maxBounds) &&
+        this.isPointInRect(x, y, this.getYBarRect())) {
       this.handleYClick(y);
     }
 
-    if (this.isPointInRect(x, y, this.getXBarRect())) {
+    if (this.isXBarVisible(maxBounds) &&
+        this.isPointInRect(x, y, this.getXBarRect())) {
       this.handleXClick(x);
     }
   }
