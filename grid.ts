@@ -276,9 +276,14 @@ class InfiniteGrid {
     private onMouseMove(e:MouseEvent) {
       let x = e.layerX * window.devicePixelRatio;
       let y = e.layerY * window.devicePixelRatio;
+      let maxBounds = this.getMaxBounds();
 
       this.mouseOverPosition.x = x;
       this.mouseOverPosition.y = y;
+
+      this.mouseState.mouseOffViewport =  (
+        (x + this.viewportOffset.x > maxBounds.x) ||
+          (y + this.viewportOffset.y > maxBounds.y))
 
       if (this.mouseState.mouseDown && this.scrollbars.isOver(x, y)) {
         this.scrollbars.handleClick(x, y);
