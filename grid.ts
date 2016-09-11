@@ -257,7 +257,9 @@ class InfiniteGrid {
 
     private onClick(e:MouseEvent) {
       const maxBounds = this.getMaxBounds();
-      const localXY = this.convertWorldToGridXY(e.layerX, e.layerY);
+      const localXY = this.convertWorldToGridXY(
+        e.layerX * window.devicePixelRatio,
+        e.layerY * window.devicePixelRatio);
 
       if (this.scrollbars.isOver(localXY.x, localXY.y)) {
         this.scrollbars.handleClick(localXY.x, localXY.y);
@@ -285,7 +287,9 @@ class InfiniteGrid {
     }
 
     private onMouseMove(e: MouseEvent) {
-      let localXY = this.convertWorldToGridXY(e.layerX, e.layerY);
+      let localXY = this.convertWorldToGridXY(
+        e.layerX * window.devicePixelRatio,
+        e.layerY * window.devicePixelRatio);
       this.mouseOverPosition.x = localXY.x;
       this.mouseOverPosition.y = localXY.y;
 
@@ -340,7 +344,10 @@ class InfiniteGrid {
 
     private onMouseWheel(e:WheelEvent) {
       this.scrollByPixels(e.deltaX, e.deltaY);
-      let localXY = this.convertWorldToGridXY(e.layerX, e.layerY);
+      let localXY = this.convertWorldToGridXY(
+        e.layerX * window.devicePixelRatio,
+        e.layerY * window.devicePixelRatio);
+
       this.mouseOverPosition.x = localXY.x;
       this.mouseOverPosition.y = localXY.y;
     }
@@ -396,8 +403,8 @@ class InfiniteGrid {
 
     convertWorldToGridXY(x: number, y: number):{x: number, y: number} {
       return {
-        x: x * window.devicePixelRatio + this.viewportOffset.x,
-        y: y * window.devicePixelRatio + this.viewportOffset.y,
+        x: x + this.viewportOffset.x,
+        y: y + this.viewportOffset.y,
       }
     }
 
@@ -439,7 +446,9 @@ class InfiniteGrid {
       if (this.debug)
         this.debugInfo.drawnRowGuides = this.debugInfo.drawnCells = this.debugInfo.drawnColumnHeaders = 0;
 
-      let startingXY = this.convertWorldToGridXY(this.s(this.constantOffsets.x), this.s(this.constantOffsets.y));
+      let startingXY = this.convertWorldToGridXY(
+        this.s(this.constantOffsets.x),
+        this.s(this.constantOffsets.y));
 
       const startingPosition = this.getCellFromXY(
         startingXY.x,
