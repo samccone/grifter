@@ -153,6 +153,7 @@ class InfiniteGrid {
     private onMouseLeave(e:MouseEvent) {
       this.mouseState.mouseOver = false;
       this.mouseState.mouseDown = false;
+      this.scrollbars.resetDragging();
     }
 
     private onMouseDown(e:MouseEvent) {
@@ -161,6 +162,7 @@ class InfiniteGrid {
 
     private onMouseUp(e:MouseEvent) {
       this.mouseState.mouseDown = false;
+      this.scrollbars.resetDragging();
     }
 
     private onKeyPress(e:KeyboardEvent) {
@@ -287,7 +289,7 @@ class InfiniteGrid {
       this.mouseOverPosition.x = localXY.x;
       this.mouseOverPosition.y = localXY.y;
 
-      if (this.mouseState.mouseDown && this.scrollbars.isOver(localXY.x, localXY.y)) {
+      if (this.mouseState.mouseDown) {
         this.scrollbars.handleClick(localXY.x, localXY.y);
         return
       }

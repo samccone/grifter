@@ -8,17 +8,18 @@ interface Rect {
 }
 
 class Scrollbars {
+  private draggingX: Boolean = false
+  private draggingY: Boolean = false
   scrollbarColor = 'hsl(0, 0%, 61%)'
   scrollbarBackground = 'hsl(0, 0%, 86%)'
   scrollButtColor = 'hsl(0, 0%, 76%)'
   scrollButtSize = 30
   scrollHandleSize = 12
   scrollHandleMinLength = 90
-
   constructor(
     private ctx: CanvasRenderingContext2D,
     private grid: InfiniteGrid
-  ) { }
+  ) {}
 
   private getXBarRect():Rect {
     let ret = {
@@ -32,6 +33,10 @@ class Scrollbars {
                           this.scrollButtSize);
 
     return (ret as Rect);
+  }
+
+  private isDragging(): Boolean {
+    return this.draggingX || this.draggingY;
   }
 
   private getYBarRect():Rect {
@@ -170,15 +175,24 @@ class Scrollbars {
     return this.isOverX(x, y) || this.isOverY(x, y);
   }
 
+  resetDragging() {
+    this.draggingX = false;
+    this.draggingY = false;
+  }
+
   handleClick(x:number, y:number) {
     let maxBounds = this.grid.getMaxBounds();
 
-    if (this.isOverY(x, y)) {
+    if (this.draggingY || this.isOverY(x, y)) {
+      this.resetDragging();
+      this.draggingY = true;
       this.handleYClick(y);
       return
     }
 
-    if (this.isOverX(x, y)) {
+    if (this.draggingX || this.isOverX(x, y)) {
+      this.resetDragging();
+      this.draggingX = true;
       this.handleXClick(x);
       return
     }
