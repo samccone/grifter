@@ -338,6 +338,9 @@ class InfiniteGrid {
 
     private onMouseWheel(e:WheelEvent) {
       this.scrollByPixels(e.deltaX, e.deltaY);
+      let localXY = this.convertWorldToGridXY(e.layerX, e.layerY);
+      this.mouseOverPosition.x = localXY.x;
+      this.mouseOverPosition.y = localXY.y;
     }
 
     private tick() {
