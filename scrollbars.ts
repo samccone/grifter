@@ -19,7 +19,11 @@ class Scrollbars {
   constructor(
     private ctx: CanvasRenderingContext2D,
     private grid: InfiniteGrid
-  ) {}
+  ) {
+    this.scrollButtSize = this.scrollButtSize * window.devicePixelRatio;
+    this.scrollHandleSize = this.scrollHandleSize * window.devicePixelRatio;
+    this.scrollHandleMinLength = this.scrollHandleMinLength * window.devicePixelRatio;
+  }
 
   private getXBarRect():Rect {
     let ret = {
@@ -122,15 +126,19 @@ class Scrollbars {
   }
 
   private handleXClick(x: number) {
-    this.grid.viewportOffset.x = (this.grid.getMaxBounds().x -
-                                  this.grid.dimensions.width) * (
+    let maxBounds = this.grid.getMaxBounds();
+    let nextXOffset = (maxBounds.x - this.grid.dimensions.width) * (
     this.removeXViewportOffset(x) / (this.grid.dimensions.width - this.scrollButtSize));
+
+    this.grid.scrollByPixels(nextXOffset - this.grid.viewportOffset.x, 0);
   }
 
   private handleYClick(y: number) {
-    this.grid.viewportOffset.y = (this.grid.getMaxBounds().y -
-                                  this.grid.dimensions.height) * (
-    this.removeYViewportOffset(y) / (this.grid.dimensions.height - this.scrollButtSize));
+    let maxBounds = this.grid.getMaxBounds();
+    let nextYOffset = (maxBounds.y - this.grid.dimensions.height) * (
+      this.removeYViewportOffset(y) / (this.grid.dimensions.height - this.scrollButtSize));
+
+    this.grid.scrollByPixels(0, nextYOffset - this.grid.viewportOffset.y);
   }
 
   draw() {
