@@ -119,13 +119,13 @@ class Scrollbars {
   private handleXClick(x: number) {
     this.grid.viewportOffset.x = (this.grid.getMaxBounds().x -
                                   this.grid.dimensions.width) * (
-    x / (this.grid.dimensions.width - this.scrollButtSize));
+    this.removeXViewportOffset(x) / (this.grid.dimensions.width - this.scrollButtSize));
   }
 
   private handleYClick(y: number) {
     this.grid.viewportOffset.y = (this.grid.getMaxBounds().y -
                                   this.grid.dimensions.height) * (
-    y / (this.grid.dimensions.height - this.scrollButtSize));
+    this.removeYViewportOffset(y) / (this.grid.dimensions.height - this.scrollButtSize));
   }
 
   draw() {
@@ -144,22 +144,43 @@ class Scrollbars {
     }
   }
 
+  private removeXViewportOffset(x: number): number {
+    return x - this.grid.viewportOffset.x;
+  }
+
+  private removeYViewportOffset(y: number): number {
+    return y - this.grid.viewportOffset.y;
+  }
+
+  private isOverX(x: number, y: number): Boolean {
+    let maxBounds = this.grid.getMaxBounds();
+
+    return this.isXBarVisible(maxBounds) &&
+      this.isPointInRect(this.removeXViewportOffset(x), this.removeYViewportOffset(y), this.getXBarRect());
+  }
+
+  private isOverY(x: number, y: number): Boolean {
+    let maxBounds = this.grid.getMaxBounds();
+
+    return this.isYBarVisible(maxBounds) &&
+      this.isPointInRect(this.removeXViewportOffset(x), this.removeYViewportOffset(y), this.getYBarRect());
+  }
+
   isOver(x:number, y:number): Boolean {
-    return this.isPointInRect(x, y, this.getYBarRect()) ||
-      this.isPointInRect(x, y, this.getXBarRect());
+    return this.isOverX(x, y) || this.isOverY(x, y);
   }
 
   handleClick(x:number, y:number) {
     let maxBounds = this.grid.getMaxBounds();
 
-    if (this.isYBarVisible(maxBounds) &&
-        this.isPointInRect(x, y, this.getYBarRect())) {
+    if (this.isOverY(x, y)) {
       this.handleYClick(y);
+      return
     }
 
-    if (this.isXBarVisible(maxBounds) &&
-        this.isPointInRect(x, y, this.getXBarRect())) {
+    if (this.isOverX(x, y)) {
       this.handleXClick(x);
+      return
     }
   }
 

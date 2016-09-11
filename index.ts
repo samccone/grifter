@@ -52,6 +52,7 @@ grid.render();
 document.querySelector('#ranger').addEventListener('input', (e:UIEvent) => {
   let target = <HTMLInputElement>e.target;
   grid.updateScalar(parseFloat(target.value))
+  grid.scrollByPixels(0, 0);
 });
 
 window.addEventListener('resize', function() {

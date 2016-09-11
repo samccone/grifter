@@ -19,18 +19,6 @@ class CellRenderer {
       return 'grey';
     }
 
-    isCellAtCoorsVisible(rowIndex: number, colIndex: number) {
-      let {leftX, topY, innerWidth, innerHeight} = this.getCellDrawCoords(
-        rowIndex,
-        colIndex);
-
-      return this.isCellPositionInViewport(
-        leftX,
-        topY,
-        innerWidth,
-        innerHeight);
-    }
-
     getCellDrawCoords(rowIndex: number, colIndex: number):{
       leftX: number,
       topY: number,

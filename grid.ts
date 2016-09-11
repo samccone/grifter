@@ -194,7 +194,7 @@ class InfiniteGrid {
       this.scrollByPixels(0, (by * this.getColumnOuterHeight()));
     }
 
-    private scrollByPixels(x: number, y:number) {
+    scrollByPixels(x: number, y:number) {
       let maxBounds = this.getMaxBounds();
       let xScrollable = this.scrollbars.isXBarVisible(maxBounds);
       let yScrollable = this.scrollbars.isYBarVisible(maxBounds);
@@ -246,67 +246,66 @@ class InfiniteGrid {
     }
 
     private isOverRowGuide(x: number, y:number):boolean {
-      return x <= this.s(this.dimensions.rowGuideWidth)
+      return x - this.viewportOffset.x <= this.s(this.dimensions.rowGuideWidth)
     }
 
     private isOverColumnHeader(x: number, y:number):boolean {
-      return y <= this.s(this.dimensions.columnHeaderHeight);
+      return y - this.viewportOffset.y <= this.s(this.dimensions.columnHeaderHeight);
     }
 
     private onClick(e:MouseEvent) {
-      const x = e.layerX * window.devicePixelRatio;
-      const y = e.layerY * window.devicePixelRatio;
+      const maxBounds = this.getMaxBounds();
+      const localXY = this.convertWorldToGridXY(e.layerX, e.layerY);
 
-      if (this.scrollbars.isOver(x, y)) {
-        this.scrollbars.handleClick(x, y);
+      if (this.scrollbars.isOver(localXY.x, localXY.y)) {
+        this.scrollbars.handleClick(localXY.x, localXY.y);
         return
       }
 
-      if (this.isOverRowGuide(x, y)) {
+      if (this.isOverRowGuide(localXY.x, localXY.y)) {
         return
       }
 
-      if (this.isOverColumnHeader(x, y)) {
+      if (this.isOverColumnHeader(localXY.x, localXY.y)) {
         return
       }
 
-      const coors = this.getCellFromXY(x, y);
+      const coors = this.getCellFromXY(localXY.x, localXY.y);
 
-      if (this.cellRenderer.isCellAtCoorsVisible(coors.row, coors.col, this)) {
+      if (this.isValidCell(coors.col, coors.row)) {
         console.log(coors);
       }
     }
 
-    private onMouseMove(e:MouseEvent) {
-      let x = e.layerX * window.devicePixelRatio;
-      let y = e.layerY * window.devicePixelRatio;
-      let maxBounds = this.getMaxBounds();
+    private isValidCell(col: number, row: number) {
+      return row < this.dataProvider.rows.length &&
+        col < this.dataProvider.columns.count;
+    }
 
-      this.mouseOverPosition.x = x;
-      this.mouseOverPosition.y = y;
+    private onMouseMove(e: MouseEvent) {
+      let localXY = this.convertWorldToGridXY(e.layerX, e.layerY);
+      this.mouseOverPosition.x = localXY.x;
+      this.mouseOverPosition.y = localXY.y;
 
-      this.mouseState.mouseOffViewport =  (
-        (x + this.viewportOffset.x > maxBounds.x) ||
-          (y + this.viewportOffset.y > maxBounds.y))
-
-      if (this.mouseState.mouseDown && this.scrollbars.isOver(x, y)) {
-        this.scrollbars.handleClick(x, y);
+      if (this.mouseState.mouseDown && this.scrollbars.isOver(localXY.x, localXY.y)) {
+        this.scrollbars.handleClick(localXY.x, localXY.y);
         return
       }
+
+      let maxBounds = this.getMaxBounds();
+      this.mouseState.mouseOffViewport = localXY.x > maxBounds.x || localXY.y > maxBounds.y
     }
 
     private getCellFromXY(
       x: number = 0,
       y: number = 0,
       roundFn: (x:number) => number = Math.floor):{row:number, col:number} {
-      let xWithOffset = x + this.viewportOffset.x;
-      let yWithOffset = y + this.viewportOffset.y;
 
       return {
         col: roundFn(
-          (xWithOffset - this.s(this.constantOffsets.x)) / this.getColumnOuterWidth()),
-        row: roundFn((
-          yWithOffset - this.s(this.constantOffsets.y)) / this.getColumnOuterHeight())
+          (x - this.s(this.constantOffsets.x)) / this.getColumnOuterWidth()),
+        row: roundFn(
+          (y - this.s(this.constantOffsets.y)) / this.getColumnOuterHeight())
       }
     }
 
@@ -323,7 +322,7 @@ class InfiniteGrid {
         x: (this.s(this.constantOffsets.x) +
           this.getColumnOuterWidth() * this.dataProvider.columns.count),
         y: (this.s(this.constantOffsets.y) +
-            this.getColumnOuterHeight() * this.dataProvider.rows.length),
+            this.getColumnOuterHeight() * (this.dataProvider.rows.length)),
       };
 
       if (this.scrollbars.isXBarVisible(ret)) {
@@ -390,6 +389,13 @@ class InfiniteGrid {
         this.s(this.dimensions.columnHeaderHeight));
     }
 
+    convertWorldToGridXY(x: number, y: number):{x: number, y: number} {
+      return {
+        x: x * window.devicePixelRatio + this.viewportOffset.x,
+        y: y * window.devicePixelRatio + this.viewportOffset.y,
+      }
+    }
+
     renderRowGuide(rowIndex:number) {
       let topY = this.s(this.dimensions.columnHeaderHeight) +
         this.s(((1 + rowIndex) * this.dimensions.cellMargin) +
@@ -428,13 +434,17 @@ class InfiniteGrid {
       if (this.debug)
         this.debugInfo.drawnRowGuides = this.debugInfo.drawnCells = this.debugInfo.drawnColumnHeaders = 0;
 
+      let startingXY = this.convertWorldToGridXY(this.s(this.constantOffsets.x), this.s(this.constantOffsets.y));
+
       const startingPosition = this.getCellFromXY(
-        this.s(this.constantOffsets.x),
-        this.s(this.constantOffsets.y));
+        startingXY.x,
+        startingXY.y);
+
+      let endXY = this.convertWorldToGridXY(this.dimensions.width, this.dimensions.height);
 
       const endingPosition = this.getCellFromXY(
-        this.dimensions.width,
-        this.dimensions.height,
+        endXY.x,
+        endXY.y,
         Math.ceil);
 
       const startRowIndex = Math.max(0, startingPosition.row);
@@ -550,7 +560,14 @@ class InfiniteGrid {
       }
 
       private mouseOverGridContent():boolean {
-        return this.mouseState.mouseOver && !this.mouseState.mouseOffViewport;
+        let mouseX = this.mouseOverPosition.x;
+        let mouseY = this.mouseOverPosition.y;
+
+        return this.mouseState.mouseOver &&
+          !this.mouseState.mouseOffViewport &&
+          !this.isOverColumnHeader(mouseX, mouseY) &&
+          !this.isOverRowGuide(mouseX, mouseY) &&
+          !this.scrollbars.isOver(mouseX, mouseY);
       }
 
       isRowHovered(row:number):boolean {
