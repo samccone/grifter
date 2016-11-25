@@ -1,6 +1,7 @@
 import {MouseState} from './mousestate'
 import {XYPos} from './xypos'
 import {Scrollbars} from './scrollbars'
+import {DataProvider} from './types'
 
 // https://github.com/Microsoft/TypeScript/issues/3429
 interface ObjectConstructor {
@@ -31,7 +32,7 @@ class InfiniteGrid {
   mouseState: MouseState
   private container: HTMLElement
   private canvas: HTMLCanvasElement
-  private dataProvider: any
+  private dataProvider: DataProvider
   private mouseOverPosition: XYPos
   private mouseOverTargets: {col: Number, row: Number}
   private scalar: number
@@ -283,7 +284,7 @@ class InfiniteGrid {
 
     private isValidCell(col: number, row: number) {
       return row < this.dataProvider.rows.length &&
-        col < this.dataProvider.columns.count;
+        col < this.getColumnCount();
     }
 
     private onMouseMove(e: MouseEvent) {
@@ -315,6 +316,10 @@ class InfiniteGrid {
       }
     }
 
+    private getColumnCount(): number {
+      return Object.keys(this.dataProvider.rowColumnToColumnGroup).length;
+    }
+
     private calculateMouseOverTargets() {
       const position = this.getCellFromXY(
         this.mouseOverPosition.x,
@@ -326,7 +331,7 @@ class InfiniteGrid {
     getMaxBounds(): {x: number, y: number} {
       let ret = {
         x: (this.s(this.constantOffsets.x) +
-          this.getColumnOuterWidth() * this.dataProvider.columns.count),
+          this.getColumnOuterWidth() * this.getColumnCount()),
         y: (this.s(this.constantOffsets.y) +
             this.getColumnOuterHeight() * (this.dataProvider.rows.length)),
       };
@@ -465,7 +470,7 @@ class InfiniteGrid {
       const endRowIndex = Math.max(0, endingPosition.row);
       const startColIndex = Math.max(0, startingPosition.col);
       const endColIndex = Math.min(
-        this.dataProvider.columns.count,
+        this.getColumnCount(),
         Math.max(0, endingPosition.col));
 
 
@@ -474,7 +479,7 @@ class InfiniteGrid {
         if (!row) break;
 
         for (var columnIndex = startColIndex; columnIndex < endColIndex; columnIndex++) {
-          const cell = row.columns[columnIndex];
+          const cell = row[columnIndex];
           if (!cell) break;
 
           let cellCoords = this.cellRenderer.getCellDrawCoords(rowIndex, columnIndex);
@@ -541,10 +546,7 @@ class InfiniteGrid {
         let innerHeight = this.s(this.dimensions.columnHeaderHeight);
 
         if (!this.isInViewport(
-          leftX,
-        topY + this.viewportOffset.y,
-        innerWidth,
-        innerHeight)) {
+          leftX, topY + this.viewportOffset.y, innerWidth, innerHeight)) {
           return;
         }
 

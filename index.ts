@@ -1,46 +1,53 @@
 import {InfiniteGrid} from './grid';
 import {CellRenderer} from './cell_renderer'
+import {DataProvider} from './types'
 
 var dimensions = {
   width: window.innerWidth * window.devicePixelRatio,
   height: window.innerHeight * window.devicePixelRatio,
-  columnHeaderHeight: 30 * window.devicePixelRatio,
+  columnHeaderHeight: 20 * window.devicePixelRatio,
   cellHeight: 100 * window.devicePixelRatio,
   cellWidth: 100 * window.devicePixelRatio,
   cellMargin: 5 * window.devicePixelRatio,
   rowGuideWidth: 150 * window.devicePixelRatio,
 };
 
-function generateRows(
-  rowCount:Number,
-  columnCount:Number) {
-    let rows = [];
-
-    for(var i = 0; i < rowCount; ++i) {
-      rows[i] = {columns: []};
-      for(var j = 0; j < columnCount; ++j) {
-        rows[i].columns.push({});
-      }
-    }
-
-    return rows;
-}
-
-var dataProvider:{
-  rows: Array<{columns: any[]}>;
-  columns: {
-    count: number
-  }
-} = {
-  rows: generateRows(1000, 1000),
-  columns: {
-    count: 1000
-  }
+const dataProvider: DataProvider = {
+  rows: [
+    [{}, {}, {}, {}, {}],
+    [{}, {}, {}, {}, {}],
+    [{}, {}, {}, {}, {}],
+    [{}, {}, {}, {}, {}],
+    [{}, {}, {}, {}, {}],
+  ],
+  rowColumnToColumnGroup: {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  },
+  columns: [{
+    start: 0,
+    end: 1
+  }, {
+    start: 1,
+    end: 2
+  },{
+    start: 2,
+    end: 3
+  }, {
+    start: 4,
+    end: 5
+  }, {
+    start: 5,
+    end: 6
+  }]
 };
 
-var cellRenderer = new CellRenderer()
+const cellRenderer = new CellRenderer()
 
-var grid = new InfiniteGrid(
+const grid = new InfiniteGrid(
   document.body,
   dimensions,
   dataProvider,
