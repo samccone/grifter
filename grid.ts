@@ -503,31 +503,31 @@ class InfiniteGrid {
         this.s(this.constantOffsets.x),
         this.s(this.constantOffsets.y));
 
-      const startingPosition = this.getCellFromXY(
+      let startingPosition = this.getCellFromXY(
         startingXY.x,
         startingXY.y);
 
       let endXY = this.convertWorldToGridXY(this.dimensions.width, this.dimensions.height);
 
-      const endingPosition = this.getCellFromXY(
+      let endingPosition = this.getCellFromXY(
         endXY.x,
         endXY.y,
         Math.ceil);
 
-      const startRowIndex = Math.max(0, startingPosition.row);
-      const endRowIndex = Math.max(0, endingPosition.row);
-      const startColIndex = Math.max(0, startingPosition.col);
-      const endColIndex = Math.min(
+      let startRowIndex = Math.max(0, startingPosition.row);
+      let endRowIndex = Math.max(0, endingPosition.row);
+      let startColIndex = Math.max(0, startingPosition.col);
+      let endColIndex = Math.min(
         this.getColumnCount(),
         Math.max(0, endingPosition.col));
 
 
        for (var rowIndex = startRowIndex; rowIndex < endRowIndex; rowIndex++) {
-        const row = this.dataProvider.rows[rowIndex];
+        let row = this.dataProvider.rows[rowIndex];
         if (!row) break;
 
         for (var columnIndex = startColIndex; columnIndex < endColIndex; columnIndex++) {
-          const cell = row[columnIndex];
+          let cell = row[columnIndex];
           if (!cell) break;
 
           let cellCoords = this.cellRenderer.getCellDrawCoords(rowIndex, columnIndex);
