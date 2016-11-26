@@ -30,4 +30,4 @@ interface DataProvider {
  ]
 }
  */
-export {DataProvider}
+export {DataProvider, Column}

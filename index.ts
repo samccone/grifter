@@ -5,7 +5,7 @@ import {DataProvider} from './types'
 var dimensions = {
   width: window.innerWidth * window.devicePixelRatio,
   height: window.innerHeight * window.devicePixelRatio,
-  columnHeaderHeight: 20 * window.devicePixelRatio,
+  columnHeaderHeight: 70 * window.devicePixelRatio,
   cellHeight: 100 * window.devicePixelRatio,
   cellWidth: 100 * window.devicePixelRatio,
   cellMargin: 5 * window.devicePixelRatio,
@@ -23,25 +23,22 @@ const dataProvider: DataProvider = {
   rowColumnToColumnGroup: {
     0: 0,
     1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
+    2: 1,
+    3: 2,
+    4: 3,
   },
   columns: [{
     start: 0,
     end: 1
   }, {
     start: 1,
-    end: 2
-  },{
-    start: 2,
     end: 3
+  }, {
+    start: 3,
+    end: 4
   }, {
     start: 4,
     end: 5
-  }, {
-    start: 5,
-    end: 6
   }]
 };
 

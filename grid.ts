@@ -1,7 +1,7 @@
 import {MouseState} from './mousestate'
 import {XYPos} from './xypos'
 import {Scrollbars} from './scrollbars'
-import {DataProvider} from './types'
+import {DataProvider, Column} from './types'
 
 // https://github.com/Microsoft/TypeScript/issues/3429
 interface ObjectConstructor {
@@ -386,7 +386,8 @@ class InfiniteGrid {
           this.scalar !== this.oldScalar);
     }
 
-    renderColumnHeaders(startRowIndex:number, endRowIndex:number) {
+    renderColumnHeaders(startRowIndex: number, endRowIndex: number) {
+      // Column header background fill.
       this.ctx.fillStyle = 'hsl(232, 54%, 41%)';
       this.ctx.fillRect(
         this.s(this.constantOffsets.x),
@@ -398,12 +399,59 @@ class InfiniteGrid {
         this.drawColumnHeader(i);
       }
 
+      // Left gutter fill.
       this.ctx.fillStyle = 'hsl(0, 0%, 76%)';
       this.ctx.fillRect(
         0,
         0,
         this.s(this.dimensions.rowGuideWidth),
         this.s(this.dimensions.columnHeaderHeight));
+    }
+
+    private getColumnFromRowColumn(rowColumnIndex: number): Column {
+      return this.dataProvider.columns[
+        this.dataProvider.rowColumnToColumnGroup[rowColumnIndex]];
+    }
+
+    private calculateColumnRowWidth(rowColumnIndex: number): number {
+      const column = this.getColumnFromRowColumn(rowColumnIndex);
+      return column.end - column.start;
+    }
+
+    private drawColumnHeader(rowColumnIndex: number) {
+      let column = this.getColumnFromRowColumn(rowColumnIndex);
+
+      let leftX = this.s(((1 + column.start) * this.dimensions.cellMargin) +
+                         column.start * this.dimensions.cellWidth +
+                         this.constantOffsets.x);
+
+      let topY = 0
+      let columnWidth = this.calculateColumnRowWidth(rowColumnIndex);
+      let innerWidth = this.s(
+        (this.dimensions.cellWidth * columnWidth) +
+        (this.dimensions.cellMargin * (columnWidth - 1)));
+      let innerHeight = this.s(this.dimensions.columnHeaderHeight);
+
+      if (!this.isInViewport(
+        leftX, topY + this.viewportOffset.y, innerWidth, innerHeight)) {
+          return;
+      }
+
+      this.debug && this.debugInfo.drawnColumnHeaders++;
+
+      this.ctx.fillStyle = 'hsl(235, 66%, 30%)';
+      this.ctx.fillRect(
+        leftX - this.viewportOffset.x,
+        topY,
+        innerWidth,
+        innerHeight);
+
+      this.ctx.fillStyle = 'white';
+      this.drawText(
+        this.s(12),
+        leftX - this.viewportOffset.x,
+        topY + innerHeight / 2,
+        `column ${column.start}`)
     }
 
     convertWorldToGridXY(x: number, y: number):{x: number, y: number} {
@@ -534,37 +582,6 @@ class InfiniteGrid {
 
 
         return false;
-      }
-
-      private drawColumnHeader(columnIndex:number) {
-        let leftX = this.s(this.constantOffsets.x) +
-          this.s(((1 + columnIndex) * this.dimensions.cellMargin) +
-                 columnIndex * this.dimensions.cellWidth);
-
-        let topY = 0
-        let innerWidth = this.s(this.dimensions.cellWidth);
-        let innerHeight = this.s(this.dimensions.columnHeaderHeight);
-
-        if (!this.isInViewport(
-          leftX, topY + this.viewportOffset.y, innerWidth, innerHeight)) {
-          return;
-        }
-
-        this.debug && this.debugInfo.drawnColumnHeaders++;
-
-        this.ctx.fillStyle = 'hsl(235, 66%, 30%)';
-        this.ctx.fillRect(
-          leftX - this.viewportOffset.x,
-          topY,
-          innerWidth,
-          innerHeight);
-
-        this.ctx.fillStyle = 'white';
-        this.drawText(
-          this.s(12),
-          leftX - this.viewportOffset.x,
-          topY + innerHeight / 2,
-          `column ${columnIndex}`)
       }
 
       private getColumnOuterWidth() {
