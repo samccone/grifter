@@ -451,7 +451,9 @@ class InfiniteGrid {
         this.s(12),
         leftX - this.viewportOffset.x,
         topY + innerHeight / 2,
-        `column ${column.start}`)
+        `column ${column.start}`,
+        innerWidth
+      )
     }
 
     convertWorldToGridXY(x: number, y: number):{x: number, y: number} {
@@ -619,11 +621,16 @@ class InfiniteGrid {
         return val * this.scalar;
       }
 
+      calculateTextWidth(text: string, ctx: CanvasRenderingContext2D): number {
+        return ctx.measureText(text).width;
+      }
+
       drawText(
-        fontSize:number,
-        x:number,
-        y:number,
-        text:string) {
+        fontSize: number,
+        x: number,
+        y: number,
+        text: string,
+        maxWidth?: number) {
 
           // No need to draw text less than 4px
           if (fontSize < 5) {
@@ -633,6 +640,18 @@ class InfiniteGrid {
           const padding = this.s(5);
 
           this.ctx.font = `bold ${fontSize}px Roboto`
+          if (maxWidth !== undefined) {
+            let textWidth = this.calculateTextWidth(text, this.ctx);
+            let fillPercent = 75;
+
+            if (maxWidth < textWidth) {
+              text = text.slice(0, Math.ceil(
+                (fillPercent * text.length) / ((textWidth / maxWidth) * 100)));
+
+              text += '...';
+            }
+          }
+
           this.ctx.fillText(text, x + padding, y + padding);
         }
 }

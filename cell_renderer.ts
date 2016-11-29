@@ -66,18 +66,20 @@ class CellRenderer {
           rowIndex,
           columnIndex);
 
-        let width = this.grid.s(this.grid.dimensions.cellWidth)
+        let cellWidth = this.grid.s(this.grid.dimensions.cellWidth)
         let height = this.grid.s(this.grid.dimensions.cellHeight)
         this.grid.debug && this.grid.debugInfo.drawnCells++;
 
-        this.grid.ctx.fillRect(leftOffset, topOffset, width, height);
+        this.grid.ctx.fillRect(leftOffset, topOffset, cellWidth, height);
         this.grid.ctx.fillStyle = 'hsl(0, 0%, 19%)';
 
         this.grid.drawText(
           this.grid.s(12),
           leftOffset,
           topOffset + height / 2,
-          String(rowIndex) + ', ' + String(columnIndex))
+          `${rowIndex}, ${columnIndex}`,
+          cellWidth
+        )
       }
 
 }
