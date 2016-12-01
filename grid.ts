@@ -272,6 +272,7 @@ class InfiniteGrid {
       }
 
       if (this.isOverColumnHeader(localXY.x, localXY.y)) {
+        console.log(this.getColumnHeaderFromXY(localXY.x, localXY.y));
         return
       }
 
@@ -301,6 +302,17 @@ class InfiniteGrid {
 
       let maxBounds = this.getMaxBounds();
       this.mouseState.mouseOffViewport = localXY.x > maxBounds.x || localXY.y > maxBounds.y
+    }
+
+    private getColumnHeaderFromXY(
+      x: number = 0,
+      y: number = 0): {col: number} {
+
+      let cell = this.getCellFromXY(x, y);
+
+      return {
+        col: this.dataProvider.rowColumnToColumnGroup[cell.col]
+      };
     }
 
     private getCellFromXY(
