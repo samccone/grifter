@@ -248,6 +248,13 @@ class InfiniteGrid {
       this.scrollByPixels(this.getColumnOuterWidth(), 0);
     }
 
+    private isOverGridButt(x: number, y: number): boolean {
+      const overX = x - this.viewportOffset.x < this.s(this.dimensions.rowGuideWidth);
+      const overY = y - this.viewportOffset.y < this.s(this.dimensions.columnHeaderHeight);
+
+      return overX && overY;
+    }
+
     private isOverRowGuide(x: number, y:number):boolean {
       return x - this.viewportOffset.x <= this.s(this.dimensions.rowGuideWidth)
     }
@@ -267,19 +274,24 @@ class InfiniteGrid {
         return
       }
 
+      if (this.isOverGridButt(localXY.x, localXY.y)) {
+        return;
+      }
+
       if (this.isOverRowGuide(localXY.x, localXY.y)) {
+        console.log('row-guide', this.getRowGuideFromXY(localXY.x, localXY.y));
         return
       }
 
       if (this.isOverColumnHeader(localXY.x, localXY.y)) {
-        console.log(this.getColumnHeaderFromXY(localXY.x, localXY.y));
+        console.log('column-header', this.getColumnHeaderFromXY(localXY.x, localXY.y));
         return
       }
 
       const coors = this.getCellFromXY(localXY.x, localXY.y);
 
       if (this.isValidCell(coors.col, coors.row)) {
-        console.log(coors);
+        console.log('cell', coors);
       }
     }
 
@@ -302,6 +314,15 @@ class InfiniteGrid {
 
       let maxBounds = this.getMaxBounds();
       this.mouseState.mouseOffViewport = localXY.x > maxBounds.x || localXY.y > maxBounds.y
+    }
+
+    private getRowGuideFromXY(
+      x: number = 0,
+      y: number = 0): {row: number} {
+
+      let cell = this.getCellFromXY(x, y);
+
+      return {row: cell.row};
     }
 
     private getColumnHeaderFromXY(
